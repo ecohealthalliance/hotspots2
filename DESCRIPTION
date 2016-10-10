@@ -1,0 +1,32 @@
+Package: hotspots2
+Title: Analysis of the Hotspots dataset on disease emergence
+Description: 
+Version: 2.0
+Author: Toph Allen <allen@ecohealthalliance.org>
+Maintainer: Toph Allen <allen@ecohealthalliance.org>
+LazyData: true
+Depends:
+    plyr,
+    dismo,
+    gbm,
+    sp,
+    rgdal,
+    raster
+Suggests:
+    doParallel,
+    foreach,
+    ggplot2,
+    RColorBrewer,
+    MASS,
+    pscl,
+    boot,
+    maptools,
+    nlme,
+    geosphere,
+    knitr,
+    ramps,
+    reshape2,
+    stringr,
+    matrixStats
+License: None
+Roxygen: list(wrap = FALSE)
