@@ -33,5 +33,7 @@ vignettes/*.pdf
 *.knit.md
 .Rproj.user
 
-# Raw data directory, as it might get pretty big
-/data-raw/
+# Raw data directory, as it might get pretty big.
+/data-raw/*
+# But not scripts in it
+!/data-raw/*.R
