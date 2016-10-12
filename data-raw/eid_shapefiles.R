@@ -6,7 +6,7 @@ library(dplyr)
 library(foreach)
 library(doParallel)
 
-registerDoParallel(8)
+registerDoParallel()
 
 # This script loads the shapefiles for EID events and overlays them on the grid.
 
@@ -16,7 +16,7 @@ shapefiles <- list.files(system.file("data-raw", "Maps_Unprojected", package = "
 
 
 
-event_coverages <- foreach(shapefile = shapefiles, .combine = rbind) %dopar% {
+event_coverage <- foreach(shapefile = shapefiles, .combine = rbind) %dopar% {
   layer <- strsplit(basename(shapefile), ".", fixed = TRUE)[[1]][1]
   print(layer)
   event_polygon <- readOGR(dsn = shapefile, layer = layer, verbose = FALSE)
@@ -25,10 +25,10 @@ event_coverages <- foreach(shapefile = shapefiles, .combine = rbind) %dopar% {
   if (nrow(coverage) > 0) {
     coverage <- coverage %>%
       mutate(event_name = layer) %>%
-      select(gridid = GridID, event_name, weight)
+      select(gridid = GridID, event_name, coverage = weight)
   }
   print(coverage)
   coverage
 }
 
-save(event_coverages, file = file.path(data_dir(), "event_coverages.RData"))
+save(event_coverage, file = file.path(data_dir(), "event_coverage.RData"))

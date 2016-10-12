@@ -1,5 +1,8 @@
 load_all()
 library(dplyr)
+library(reshape2)
+library(tidyr)
+library(stringr)
 
 options(stringsAsFactors = FALSE)
 
@@ -54,7 +57,8 @@ drivers_orig$livestock_mam <- rowSums(drivers_orig[, c("goats", "buffalo", "catt
 
 # Build separate data frame of decade-stratified drivers.
 decadal_wide <- drivers_orig[c("gridid", "crop_1970", "crop_1980", "crop_1990", "crop_2000", "past_1970", "past_1980", "past_1990", "past_2000", "pop_1970", "pop_1980", "pop_1990", "pop_2000")]
-decadal_wide <- na.omit(decadal_wide)
+decadal_wide <- replace_na(decadal_wide, list(crop_1970 = 0, crop_1980 = 0, crop_1990 = 0, crop_2000 = 0, past_1970 = 0, past_1980 = 0, past_1990 = 0, past_2000 = 0, pop_1970 = 0, pop_1980 = 0, pop_1990 = 0, pop_2000 = 0))
+# We do this to eliminate NAs (assuming that where cropland = 0, often around where aggregation happened at continent edges, true value is close to zero).
 
 decadal <- melt(decadal_wide, id.vars = "gridid")
 
@@ -72,6 +76,8 @@ decadal <- plyr::ldply(decadal_years, .fun = function(x) {
   names(e) <- c("gridid", "year", "crop", "past", "pop")
   return(e)
 })
+
+# decadal <- replace_na(decadal, list(pop = 0, past = 0, crop = 0))
 
 
 
@@ -97,13 +103,15 @@ change <- mdply(.data = change_args, .fun = function(year, var) {
 change$var <- NULL
 
 
+
 change <- melt(change, id.vars = c("gridid", "year"), na.rm = TRUE)
 change <- dcast(change, gridid + year ~ ...)
 
 new_names <- paste0(vars, "_change")
 names(new_names) <- vars
-
 change <- plyr::rename(change, new_names)
+
+change <- replace_na(change, list(pop_change = 0, past_change = 0, crop_change = 0))
 
 
 

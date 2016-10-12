@@ -1,0 +1,112 @@
+# Sample Events
+
+## Loading datasets
+
+```{r load}
+load_all()
+library(hotspots2)
+library(raster)
+library(dplyr)
+library(tidyr)
+library(purrr)
+library(foreach)
+library(doParallel)
+
+registerDoParallel(4)
+
+# First, we'll load all datasets.
+
+data(decadal)
+data(change)
+data(drivers)
+data(eid_metadata)
+data(event_coverage)
+
+```
+
+## Select EID events, create weighted vector.
+
+```{r select-events}
+selected_events <- eid_metadata %>%
+  filter(wildlife_zoonoses == 1,
+         event_year >= 1970) %>%
+  select(name = eid_name,
+         year = event_year)
+
+```
+
+We have `r nrow(events)` events meeing these criteria. We will sample this number of presence and background points for each model run. The samples will use the following weights:
+
+- Background points are drawn from all grid cells, weighted by the measure of reporting effort
+- Presence points are drawn from the grid cells covered by the polygons representing each event. Within the grid cells covered by each event's polygons, points are weighted by the measure of reporting effort multiplied by the percentage of that grid cell covered by the polygon. However, weighting is uniform between events (the total vector for each event is normalized so that each event contributes 1 to the aggregated vector).
+
+To achieve this, while also being able to match events with the appropriate decadal values, we will conduct sampling in two rounds. First, we will draw a sample of 149 events from the list of events, with a uniform weight. Then, for each event, we will draw a grid cell from among the grid cells covered by its polygon, weighed by coverage and the publication index. At the same time we will select an absence from all grid cells, weighted by the publication index. We will record these presence and absence grid cells, alongside the year to draw the appropriate values for.
+
+```{r create-sampling-weights}
+set.seed(20140605)
+
+presence_weights <- event_coverage %>%
+  filter(event_name %in% selected_events$name) %>%
+  left_join(select(drivers, gridid, pubs_identity)) %>%
+  group_by(event_name) %>%
+  # only_if()(mutate)(weight = 1) %>%
+  mutate(weight = coverage * pubs_identity / sum(coverage * pubs_identity, na.rm = TRUE),
+         # We do this part to provide any weights where the publication value is NA.
+         total_weight = sum(weight, na.rm = TRUE),
+         weight = ifelse(total_weight == 0, coverage, weight)) %>%
+  ungroup() %>%
+  replace_na(replace = list(weight = 0, pubs_identity = 0))
+
+absence_weights <- drivers %>%
+  select(gridid, pubs_identity) %>%
+  replace_na(replace = list(pubs_identity = 0))
+
+# There are two polygons which did not produce a presence weight.
+selected_events <- selected_events %>%
+  filter(name %in% presence_weights$event_name)
+
+```
+
+Now that we've created our weights, and selected our set of events, we conduct our rounds of sampling.
+
+```{r sample-events-and-gridids}
+
+sample_iter <- 100
+
+# First, we sample randomly among events.
+sampled_events <- foreach(i = 1:sample_iter) %do% {
+  sample_n(selected_events, size = 149, replace = TRUE)
+}
+
+# Next, for each event, we select a presence and absence as described above.
+sample_gridids <- function(to_sample) {
+  # print(to_sample$name)
+  presence <- presence_weights %>%
+    filter(event_name == to_sample$name) %>%
+    sample_n(size = 1, weight = weight) %>%
+    select(gridid) %>%
+    data.frame(presence = 1)
+
+  absence <- absence_weights %>%
+    sample_n(size = 1, weight = pubs_identity) %>%
+    select(gridid) %>%
+    data.frame(presence = 0)
+
+  sampled <- rbind(presence, absence)
+  # sampled$name <- to_sample$name
+  # sampled$year <- to_sample$year
+  return(sampled)
+}
+
+# # There is a way to do this with purrr, but it's much faster with foreach in parallel, so we'll use that.
+# bsm_events1 <- sampled_events %>%
+#   map(~ by_row(., sample_gridids, .collate = "row"))
+
+bsm_events <- foreach(i = sampled_events) %dopar% {
+  by_row(i, sample_gridids, .collate = "row") %>%
+    select(-.row)
+}
+
+save(bsm_events, file = file.path(cache_dir(), "bsm_events.RData"))
+
+```
