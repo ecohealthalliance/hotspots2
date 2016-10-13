@@ -52,12 +52,13 @@ bsm <- foreach(i = 1:length(bsm_events), .verbose = TRUE) %dopar% {
                     gbm.y = y_ind,
                     family = "bernoulli",
                     tree.complexity = 3,
-                    learning.rate = 0.01,
+                    learning.rate = 0.001,
                     n.trees = 50,
-                    plot.main = TRUE,
+                    plot.main = FALSE,
                     verbose = TRUE)
 
   return(model)
 }
 
 save(bsm, file = file.path(cache_dir(), "bsm.RData"))
+

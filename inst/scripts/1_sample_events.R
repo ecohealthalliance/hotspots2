@@ -43,9 +43,10 @@ presence_weights <- event_coverage %>%
   replace_na(replace = list(weight = 0, pubs_identity = 0))
 
 
-# We now deal with this by replacing pasture and crop NAs with 0s.
-# There are a few locations where our presence weights don't overlap the drivers data frame. Because of this, we will omit those.
-# quickmap(semi_join(presence_weights, decadal), weight)
+# We now deal with this by replacing pasture and crop NAs with 0s. There are a
+# few locations where our presence weights don't overlap the drivers data frame.
+# Because of this, we will omit those. quickmap(semi_join(presence_weights,
+# decadal), weight)
 
 # presence_weights <- semi_join(presence_weights, decadal)
 # This removes all grid cells belonging to HED_166
