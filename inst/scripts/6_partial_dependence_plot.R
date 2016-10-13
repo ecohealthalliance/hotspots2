@@ -196,14 +196,10 @@ ggplot(mapping = aes(x = x)) +
        title = "Partial dependence plot for zoonotic EID event occurrence")
 
 
-
-# ggsave(filename = file.path("~/Dropbox (EHA)/Hotspots II/Hotspots II Final Plots", "bsm_partial_dependence_hist.png"),
-#        height = 9,
-#        width = 8.5)
-
-# ggsave(filename = file.path("~/Dropbox (EHA)/Hotspots II/Hotspots II Final Plots", "bsm_partial_dependence_hist.pdf"),
-#        height = 9,
-#        width = 8.5)
+ggsave(file.path(out_dir(), "bsm_partial_dependence_hist.png"),
+       height = 9, width = 8.5)
+ggsave(file.path(out_dir(), "bsm_partial_dependence_hist.pdf"),
+       height = 9, width = 8.5)
 
 
 
@@ -279,12 +275,7 @@ ggplot(mapping = aes(x = x)) +
        y = "Relative probability of EID event occurrence (and 95% CI)",
        title = "Partial dependence plot for zoonotic EID event occurrence")
 
-
-
-# ggsave(filename = file.path("~/Dropbox (EHA)/Hotspots II/Hotspots II Final Plots", "bsm_partial_dependence_hist.png"),
-#        height = 9,
-#        width = 8.5)
-
-# ggsave(filename = file.path("~/Dropbox (EHA)/Hotspots II/Hotspots II Final Plots", "bsm_partial_dependence_hist.pdf"),
-#        height = 9,
-#        width = 8.5)
+ggsave(file.path(out_dir(), "partial_dependence_hist_truncated.pdf"),
+       height = 9, width = 8.5)
+ggsave(file.path(out_dir(), "partial_dependence_hist_truncated.png"),
+       height = 9, width = 8.5)

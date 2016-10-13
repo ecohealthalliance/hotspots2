@@ -15,27 +15,27 @@ load("cache/bsm.RData")
 
 # Relative Influence Plot
 names <- c("past_change" = "Pasture Change",
-               "earth6_veg_herba" = "Herbaceous Veg.",
-               "earth9_urban" = "Urban/Built-up",
-               "crop" = "Cropland",
-               "mamdiv" = "Mammal Biodiversity",
-               "pop_change" = "Population Change",
-               "earth5_shrubs" = "Shrubs",
-               "earth7_veg_manag" = "Cultivated/Managed\nVeg.",
-               "earth12_water" = "Water",
-               "earth10_snowice" = "Snow/Ice",
-               "poultry" = "Poultry",
-               "earth11_barren" = "Barren",
-               "earth1_trees_needl" = "Evergreen/Deciduous\nNeedleleaf Trees",
-               "earth8_veg_flood" = "Regularly Flooded Veg.",
-               "earth3_trees_decid" = "Deciduous Broadleaf\nTrees",
-               "pop" = "Population",
-               "crop_change" = "Cropland Change",
-               "gens" = "Global Envir. Strat.",
-               "earth4_trees_other" = "Mixed/Other Trees",
-               "past" = "Pasture",
-               "earth2_trees_everg" = "Evergreen Broadleaf\nTrees",
-               "livestock_mam" = "Livestock Mammal\nHeadcount")
+           "earth6_veg_herba" = "Herbaceous Veg.",
+           "earth9_urban" = "Urban/Built-up",
+           "crop" = "Cropland",
+           "mamdiv" = "Mammal Biodiversity",
+           "pop_change" = "Population Change",
+           "earth5_shrubs" = "Shrubs",
+           "earth7_veg_manag" = "Cultivated/Managed\nVeg.",
+           "earth12_water" = "Water",
+           "earth10_snowice" = "Snow/Ice",
+           "poultry" = "Poultry",
+           "earth11_barren" = "Barren",
+           "earth1_trees_needl" = "Evergreen/Deciduous\nNeedleleaf Trees",
+           "earth8_veg_flood" = "Regularly Flooded Veg.",
+           "earth3_trees_decid" = "Deciduous Broadleaf\nTrees",
+           "pop" = "Population",
+           "crop_change" = "Cropland Change",
+           "gens" = "Global Envir. Strat.",
+           "earth4_trees_other" = "Mixed/Other Trees",
+           "past" = "Pasture",
+           "earth2_trees_everg" = "Evergreen Broadleaf\nTrees",
+           "livestock_mam" = "Livestock Mammal\nHeadcount")
 
 groups <- list("Human Activity" = "pop",
                "Human Activity" = "pop_change",
@@ -73,10 +73,9 @@ bsm_scatter$var <- factor(bsm_scatter$var, levels = bsm_rel_inf$var)
 bsm_scatter$group <- factor(bsm_scatter$var)
 levels(bsm_scatter$group) <- groups
 
-ggplot(bsm_scatter, aes(x = var, y = rel.inf, fill = group)) + geom_boxplot() + coord_flip() + scale_x_discrete(labels = names) + labs(y = "Relative Influence (%)", x = "Variable", title = "Relative Influence of Drivers on\n Zoonotic EID Event Risk") + theme_bw(base_size = 11)
+ggplot(bsm_scatter, aes(x = var, y = rel.inf, fill = group)) + geom_boxplot() + coord_flip() + scale_x_discrete(labels = names) + labs(y = "Relative Influence (%)", x = "Variable", title = "Relative influence of drivers on\n zoonotic EID event risk index") + theme_bw(base_size = 11)
 
-ggsave("inst/out/mksm/relative_influence_boxplot.png", height = 6, width = 6.5)
-ggsave("~/Dropbox (EHA)/Hotspots II/Hotspots II Final Plots/relative_influence_boxplot.png",
+ggsave(file.path(out_dir(), "relative_influence_boxplot.png"),
        height = 6, width = 6.5)
-ggsave("~/Dropbox (EHA)/Hotspots II/Hotspots II Final Plots/relative_influence_boxplot.pdf",
+ggsave(file.path(out_dir(), "relative_influence_boxplot.pdf"),
        height = 6, width = 6.5)

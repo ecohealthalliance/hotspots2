@@ -37,3 +37,7 @@ vignettes/*.pdf
 /data-raw/*
 # But not scripts in it
 !/data-raw/*.R
+
+# Generated output. I'll move that around manually,
+# and we don't want it cluttering up the repo.
+/inst/out/

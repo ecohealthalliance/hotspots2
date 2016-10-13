@@ -5,3 +5,7 @@ cache_dir <- function() {
 data_dir <- function() {
   system.file("data", package = "hotspots2")
 }
+
+out_dir <- function() {
+  system.file("out", package = "hotspots2")
+}
