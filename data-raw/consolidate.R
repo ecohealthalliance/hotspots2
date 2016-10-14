@@ -2,7 +2,11 @@ load_all()
 library(dplyr)
 library(purrr)
 
-list.files(cache_dir(), full.names = TRUE) %>%
+list(file.path(cache_dir(), "drivers_orig.RData"),
+     file.path(cache_dir(), "earthenv.RData"),
+     file.path(cache_dir(), "gens_df.RData"),
+     file.path(cache_dir(), "mamdiv.RData"),
+     file.path(cache_dir(), "pubs_fit.RData")) %>%
   walk(load, envir = globalenv())
 
 names(drivers_orig)

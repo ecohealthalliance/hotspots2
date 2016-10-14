@@ -117,9 +117,9 @@ change <- replace_na(change, list(pop_change = 0, past_change = 0, crop_change =
 
 # Save intermediary file for driver superset  
 cache_dir <- system.file("cache", package = "hotspots2")
-save(drivers_orig, file = file.path(cache_dir, "drivers_orig.RData"))
+save(drivers_orig, file = file.path(cache_dir(), "drivers_orig.RData"))
 
 # Save decadal and change data files
 data_dir <- system.file("data", package = "hotspots2")
-save(decadal, file = file.path(data_dir, "decadal.RData"))
-save(change, file = file.path(data_dir, "change.RData"))
+save(decadal, file = file.path(data_dir(), "decadal.RData"))
+save(change, file = file.path(data_dir(), "change.RData"))

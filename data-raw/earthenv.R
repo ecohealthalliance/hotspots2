@@ -34,4 +34,4 @@ earthenvnames <- c("consensus_full_class_1"  = "earth1_trees_needl",
 earthenv <- plyr::rename(earthenv, replace = earthenvnames)
 
 cache_dir <- system.file("cache", package = "hotspots2")
-save(earthenv, file = file.path(cache_dir, "earthenv.RData"))
+save(earthenv, file = file.path(cache_dir(), "earthenv.RData"))

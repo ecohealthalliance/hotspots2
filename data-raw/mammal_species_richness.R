@@ -7,4 +7,4 @@ mamdiv <- readGDAL(system.file("data-raw", "rich_1deg", "rich_mammals_1deg.asc",
   rename(mamdiv = band1, lon = x, lat = y)
 
 cache_dir <- system.file("cache", package = "hotspots2")
-save(mamdiv, file = file.path(cache_dir, "mamdiv.RData"))
+save(mamdiv, file = file.path(cache_dir(), "mamdiv.RData"))
