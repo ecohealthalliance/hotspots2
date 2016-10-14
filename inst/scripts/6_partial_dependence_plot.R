@@ -217,31 +217,51 @@ ggsave(file.path(out_dir(), "bsm_partial_dependence_hist.pdf"),
 # ALTERNATE FUTURE VERSION
 # In this version, we only plot the (0.05, 0.95) range of the x axis.
 
-plotted_data <- ggplot_build(p)$data[[1]]
-plotted_data$name <- unique(bsm_hist_data$name)[plotted_data$PANEL]
-plotted_data <- plotted_data[, c("name", "x", "y")]
+x_cutoff <- c(0.1, 0.9)
+
+
+load(file.path(cache_dir(), "bsm_events.RData"))
+bsm_hist_data <- do.call(rbind, bsm_events)
+
+# Make sure that the factor of names is exactly the same as the above plot.
+bsm_hist_data <- bsm_hist_data[, names(bsm_hist_data) %in% c("gridid", names(names))]
+bsm_hist_data <- reshape2::melt(bsm_hist_data, id.vars = "gridid")
+bsm_hist_data$variable <- revalue(bsm_hist_data$variable, replace = names)
+names(bsm_hist_data) <- c("gridid", "name", "x")
 
 # This is the part where I rescale the axes.
+# I'm going to try creating the histogram *after* we subset.
 hist_final <- foreach(name = unique(pdq$name), .combine = rbind) %do% {
   pdq_subset <- pdq[pdq$name == name, ]
-  plotted_data_sub <- plotted_data[plotted_data$name == name, ]
   bsm_hist_data_sub <- bsm_hist_data[bsm_hist_data$name == name, ]
 
   # In this version, we 
-  xmin <- quantile(bsm_hist_data_sub$x, probs = c(0.05, 0.95))[1]
-  xmax <- quantile(bsm_hist_data_sub$x, probs = c(0.05, 0.95))[2]
+  xmin <- quantile(bsm_hist_data_sub$x, probs = x_cutoff)[1]
+  xmax <- quantile(bsm_hist_data_sub$x, probs = x_cutoff)[2]
   # ymax <- max(pdq_subset$q95, na.rm = TRUE)
 
-  yminrm <- sum(plotted_data_sub[plotted_data_sub$x < xmin, "y"])
-  ymaxrm <- sum(plotted_data_sub[plotted_data_sub$x > xmax, "y"])
+  bsm_hist_data_sub <- bsm_hist_data_sub[bsm_hist_data_sub$x >= xmin & bsm_hist_data_sub$x <= xmax, ]
+
+  p <- ggplot(mapping = aes(x = x)) +
+    facet_wrap(~ name, scales = "free", ncol = 4) +
+    geom_histogram(data = bsm_hist_data_sub)
+
+  plotted_data <- ggplot_build(p)$data[[1]]
+  plotted_data$name <- name
+  plotted_data <- plotted_data[, c("name", "x", "y")]
+
+  # Here is where I'd rescale the y axis.
+  yminrm <- sum(plotted_data[plotted_data$x < xmin, "y"])
+  ymaxrm <- sum(plotted_data[plotted_data$x > xmax, "y"])
+
 
   # We use >= and <= here else Snow/Ice throws an error.
-  plotted_data_sub <- plotted_data_sub[plotted_data_sub$x >= xmin & plotted_data_sub$x <= xmax, ]
-  plotted_data_sub[1, "y"] <- plotted_data_sub[1, "y"] + yminrm
-  plotted_data_sub[nrow(plotted_data_sub), "y"] <- plotted_data_sub[nrow(plotted_data_sub), "y"] + ymaxrm
+  plotted_data <- plotted_data[plotted_data$x >= xmin & plotted_data$x <= xmax, ]
+  plotted_data[1, "y"] <- plotted_data[1, "y"] + yminrm
+  plotted_data[nrow(plotted_data), "y"] <- plotted_data[nrow(plotted_data), "y"] + ymaxrm
 
-  plotted_data_sub$y <-  plotted_data_sub$y * (ymax / max(plotted_data_sub$y))
-  plotted_data_sub
+  plotted_data$y <-  plotted_data$y * (ymax / max(plotted_data$y))
+  plotted_data
 }
 
 hist_final$name <- factor(hist_final$name, levels = levels(pdq$name))
@@ -254,8 +274,8 @@ pdq_final <- foreach(name = unique(pdq$name), .combine = rbind) %do% {
   bsm_hist_data_sub <- bsm_hist_data[bsm_hist_data$name == name, ]
 
   # In this version, we 
-  xmin <- quantile(bsm_hist_data_sub$x, probs = c(0.05, 0.95))[1]
-  xmax <- quantile(bsm_hist_data_sub$x, probs = c(0.05, 0.95))[2]
+  xmin <- quantile(bsm_hist_data_sub$x, probs = x_cutoff)[1]
+  xmax <- quantile(bsm_hist_data_sub$x, probs = x_cutoff)[2]
   # ymax <- max(pdq_subset$q95, na.rm = TRUE)
 
   pdq_subset <- pdq_subset[pdq_subset$x >= xmin & pdq_subset$x <= xmax, ]

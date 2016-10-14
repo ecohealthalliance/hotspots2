@@ -20,7 +20,7 @@ load(file.path(cache_dir(), "bsm_gridids.RData"))
 ## ----prepare-------------------------------------------------------------
 # Remove some other variables that we were keeping for one reason or another.
 drivers <- drivers %>%
-  select(-gdp, -land_area, -iso3, -pubs_fit, -pubs_identity)
+  select(-gdp, -land_area, -iso3, -pubs_fit, -pubs_fit)
 
 predictor_names <- c("pop",
                      "crop",
