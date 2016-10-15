@@ -1,58 +1,5 @@
 # Functions related to plotting.
 
-theme_nothing <- function(base_size = 12, base_family = "Helvetica")
-{
-  theme_bw(base_size = base_size, base_family = base_family) %+replace%
-    theme(
-      rect = element_blank(),
-      line = element_blank(),
-      text = element_blank(),
-      legend.position = "none"
-      # axis.ticks = element_text
-    )
-}
-
-nolines <- function(base_size = 12, base_family = "Helvetica")
-{
-  theme_bw(base_size = base_size, base_family = base_family) %+replace%
-    theme(
-      rect = element_blank(),
-      line = element_blank()
-      # text = element_blank()
-      # legend.position = "none"
-      # axis.ticks = element_text
-    )
-}
-
-notext <- function() {
-  require(ggplot2)
-  labs(x=NULL, y=NULL)
-}
-
-notext <- function() {
-  require(ggplot2)
-  theme(text = element_blank())
-}
-
-notitle <- function() {
-  require(ggplot2)
-  labs(title=NULL)
-}
-
-nolegend <- function() {
-  require(ggplot2)
-  theme(legend.position = "none")
-}
-
-simple_legend <- function() {
-  guides(fill = guide_colorbar(title = element_blank(), label = FALSE))
-}
-
-# spectral <- rev(colorRampPalette(brewer.pal(11, "Spectral"))(100))
-spectral <- function(numcolors) {
-  rev(colorRampPalette(brewer.pal(11, "Spectral"))(numcolors))
-}
-
 quickmap <- function(data, fill, geom = "raster", limits = NULL, plot_factor = FALSE, pal_fun = "viridis", ...) {
   require(ggplot2)
   require(RColorBrewer)
@@ -104,6 +51,59 @@ quickmap <- function(data, fill, geom = "raster", limits = NULL, plot_factor = F
   }
 
   return(quickmap)
+}
+
+theme_nothing <- function(base_size = 12, base_family = "Helvetica")
+{
+  theme_bw(base_size = base_size, base_family = base_family) %+replace%
+    theme(
+      rect = element_blank(),
+      line = element_blank(),
+      text = element_blank(),
+      legend.position = "none"
+      # axis.ticks = element_text
+    )
+}
+
+nolines <- function(base_size = 12, base_family = "Helvetica")
+{
+  theme_bw(base_size = base_size, base_family = base_family) %+replace%
+    theme(
+      rect = element_blank(),
+      line = element_blank()
+      # text = element_blank()
+      # legend.position = "none"
+      # axis.ticks = element_text
+    )
+}
+
+notext <- function() {
+  require(ggplot2)
+  labs(x=NULL, y=NULL)
+}
+
+notext <- function() {
+  require(ggplot2)
+  theme(text = element_blank())
+}
+
+notitle <- function() {
+  require(ggplot2)
+  labs(title=NULL)
+}
+
+nolegend <- function() {
+  require(ggplot2)
+  theme(legend.position = "none")
+}
+
+simple_legend <- function() {
+  guides(fill = guide_colorbar(title = element_blank(), label = FALSE))
+}
+
+# spectral <- rev(colorRampPalette(brewer.pal(11, "Spectral"))(100))
+spectral <- function(numcolors) {
+  rev(colorRampPalette(brewer.pal(11, "Spectral"))(numcolors))
 }
 
 quickglobe <- function(fill, data, geom = "tile", limits = NULL, plot_factor = FALSE, orientation = c(-90, 0, 0), ...) {
@@ -167,16 +167,4 @@ quantvar <- function(x) {
     quantvar <- cut(x, breaks = breaks, include.lowest = TRUE, labels = FALSE)
   }
   return(quantvar)
-}
-
-winsorize <- function (x, multiple = 3) {
-  if (length(multiple) != 1 || multiple <= 0) {
-    stop("bad value for 'multiple'")
-  }
-  med <- median(x, na.rm = TRUE)
-  y <- x - med # Center so that median = 0
-  sc <- mad(y, center=0, na.rm = TRUE) * multiple # Create scaled cutoff
-  y[y > sc] <- sc # Remove values outside the scaled cutoff
-  y[y < -sc] <- -sc
-  y + med # De-center and return data.
 }
