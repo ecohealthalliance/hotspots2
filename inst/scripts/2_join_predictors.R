@@ -7,7 +7,7 @@ library(purrr)
 library(foreach)
 library(doParallel)
 
-registerDoParallel(4)
+registerDoParallel(12)
 
 # First, we'll load all datasets.
 

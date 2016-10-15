@@ -6,7 +6,7 @@ library(ggplot2)
 
 require(foreach)
 require(doParallel)
-registerDoParallel(4)
+registerDoParallel(12)
 
 data(drivers)
 load("cache/bsm.RData")

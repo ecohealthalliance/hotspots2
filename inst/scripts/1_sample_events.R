@@ -8,7 +8,8 @@ library(purrr)
 library(foreach)
 library(doParallel)
 
-registerDoParallel(4)
+registerDoParallel(12)
+sample_iter <- 1000
 
 # First, we'll load all datasets.
 
@@ -65,8 +66,6 @@ selected_events <- selected_events %>%
 
 
 ## ----sample-events-and-gridids-------------------------------------------
-
-sample_iter <- 100
 
 # First, we sample randomly among events.
 sampled_events <- foreach(i = 1:sample_iter) %do% {

@@ -7,7 +7,7 @@ library(purrr)
 library(foreach)
 library(doParallel)
 
-registerDoParallel(4)
+registerDoParallel(16)
 
 library(dismo)
 library(gbm)
@@ -55,7 +55,7 @@ bsm <- foreach(i = 1:length(bsm_events), .verbose = TRUE) %dopar% {
                     learning.rate = 0.001,
                     n.trees = 50,
                     plot.main = FALSE,
-                    verbose = TRUE)
+                    verbose = FALSE)
 
   return(model)
 }

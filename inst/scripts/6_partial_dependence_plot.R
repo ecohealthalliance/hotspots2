@@ -7,7 +7,7 @@ library(boot)
 
 library(foreach)
 library(doParallel)
-registerDoParallel(4)
+registerDoParallel(12)
 
 data(drivers)
 load(file.path(cache_dir(), "bsm.RData"))
@@ -235,7 +235,7 @@ hist_final <- foreach(name = unique(pdq$name), .combine = rbind) %do% {
   pdq_subset <- pdq[pdq$name == name, ]
   bsm_hist_data_sub <- bsm_hist_data[bsm_hist_data$name == name, ]
 
-  # In this version, we 
+  # In this version, we
   xmin <- quantile(bsm_hist_data_sub$x, probs = x_cutoff)[1]
   xmax <- quantile(bsm_hist_data_sub$x, probs = x_cutoff)[2]
   # ymax <- max(pdq_subset$q95, na.rm = TRUE)
@@ -273,7 +273,7 @@ pdq_final <- foreach(name = unique(pdq$name), .combine = rbind) %do% {
   plotted_data_sub <- plotted_data[plotted_data$name == name, ]
   bsm_hist_data_sub <- bsm_hist_data[bsm_hist_data$name == name, ]
 
-  # In this version, we 
+  # In this version, we
   xmin <- quantile(bsm_hist_data_sub$x, probs = x_cutoff)[1]
   xmax <- quantile(bsm_hist_data_sub$x, probs = x_cutoff)[2]
   # ymax <- max(pdq_subset$q95, na.rm = TRUE)
