@@ -242,6 +242,8 @@ run_models <- function(cache_name) {
     return(model)
   }
 
+  bsm <- bsm[!sapply(bsm, is.null)]
+
   save(bsm, file = file.path(cache_dir(), "test_runs", paste0(cache_name, "_bsm.RData")))
 }
 
@@ -556,7 +558,6 @@ partial_dependence_plots <- function(cache_name) {
     pdq_subset <- pdq[pdq$name == name, ]
     bsm_hist_data_sub <- bsm_hist_data[bsm_hist_data$name == name, ]
 
-    # In this version, we 
     xmin <- quantile(bsm_hist_data_sub$x, probs = x_cutoff)[1]
     xmax <- quantile(bsm_hist_data_sub$x, probs = x_cutoff)[2]
     # ymax <- max(pdq_subset$q95, na.rm = TRUE)
@@ -594,7 +595,6 @@ partial_dependence_plots <- function(cache_name) {
     plotted_data_sub <- plotted_data[plotted_data$name == name, ]
     bsm_hist_data_sub <- bsm_hist_data[bsm_hist_data$name == name, ]
 
-    # In this version, we 
     xmin <- quantile(bsm_hist_data_sub$x, probs = x_cutoff)[1]
     xmax <- quantile(bsm_hist_data_sub$x, probs = x_cutoff)[2]
     # ymax <- max(pdq_subset$q95, na.rm = TRUE)
