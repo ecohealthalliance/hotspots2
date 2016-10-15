@@ -60,5 +60,8 @@ bsm <- foreach(i = 1:length(bsm_events), .verbose = TRUE) %dopar% {
   return(model)
 }
 
+# Remove iterations which failed to fit for some reason.
+bsm <- bsm[!sapply(bsm, is.null)]
+
 save(bsm, file = file.path(cache_dir(), "bsm.RData"))
 
