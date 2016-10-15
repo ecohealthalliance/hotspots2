@@ -11,7 +11,12 @@ Depends:
     gbm,
     sp,
     rgdal,
-    raster
+    raster,
+    dplyr,
+    doParallel,
+    foreach,
+    tidyr,
+    purrr
 Suggests:
     doParallel,
     foreach,
