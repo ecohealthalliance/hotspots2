@@ -9,8 +9,6 @@ list(file.path(cache_dir(), "drivers_orig.RData"),
      file.path(cache_dir(), "pubs_fit.RData")) %>%
   walk(load, envir = globalenv())
 
-names(drivers_orig)
-
 drivers <- drivers_orig %>%
   select(gridid,
          lon,
