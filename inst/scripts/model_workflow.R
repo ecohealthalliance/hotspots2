@@ -3,7 +3,7 @@ load_all()
 
 library(foreach)
 library(doParallel)
-registerDoParallel(2)
+registerDoParallel(16)
 
 # First, we'll load all datasets.
 
@@ -13,8 +13,8 @@ data(eid_metadata)
 data(event_coverage)
 
 # Set our directory name and the number of sample iterations we want to conduct.
-model_name <- "2016-10-15_18:22_test"
-sample_iter <- 10
+model_name <- "2016-10-15_18-38_500"
+sample_iter <- 500
 
 # Create output and cache directories.
 current_cache_dir <- file.path(cache_dir(), model_name)
