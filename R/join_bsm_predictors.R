@@ -1,4 +1,4 @@
-join_predictors <- function(model_name) {
+join_bsm_predictors <- function(model_name) {
   load(file.path(current_cache_dir, paste0(model_name, "_gridids.RData")))
 
 

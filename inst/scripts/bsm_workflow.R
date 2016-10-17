@@ -3,7 +3,7 @@ load_all()
 
 library(foreach)
 library(doParallel)
-registerDoParallel(2)
+registerDoParallel(4)
 
 # First, we'll load all datasets.
 
@@ -13,8 +13,8 @@ data(eid_metadata)
 data(event_coverage)
 
 # Set our directory name and the number of sample iterations we want to conduct.
-model_name <- "2016-10-15_18:22_test"
-sample_iter <- 10
+model_name <- "bsm_1000_iter"
+sample_iter <- 1000
 
 # Create output and cache directories.
 current_cache_dir <- file.path(cache_dir(), model_name)
@@ -31,9 +31,14 @@ sink()
 
 # Make sure you name the thing "pubs_fit". cache_name should be the name of the file you wanna save.
 
-sample_events(drivers, model_name, sample_iter)
-join_predictors(model_name)
-run_models(model_name)
+# Sample grid cells according to weighting.
+sample_bsm_events(drivers, model_name, sample_iter)
+
+# Join predictors by grid_id.
+join_bsm_predictors(model_name)
+
+# You can pick up here if you want to re-fit the model.
+run_bsm(model_name)
 relative_influence_plots(model_name)
 partial_dependence_plots(model_name)
 

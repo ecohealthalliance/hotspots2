@@ -1,5 +1,5 @@
-run_models <- function(model_name) {
-  load(file.path(current_cache_dir, paste0(model_name, "_events.RData")))
+run_bsm <- function(model_name) {
+  load(file.path(cache_dir(), paste0("bsm_events.RData")))
 
   predictor_names <- c("pop",
                        "crop",
@@ -37,7 +37,7 @@ run_models <- function(model_name) {
                       gbm.y = y_ind,
                       family = "bernoulli",
                       tree.complexity = 3,
-                      learning.rate = 0.0075,
+                      learning.rate = 0.005,
                       n.trees = 50,
                       plot.main = FALSE,
                       verbose = TRUE)
@@ -47,5 +47,5 @@ run_models <- function(model_name) {
 
   bsm <- bsm[!sapply(bsm, is.null)]
 
-  save(bsm, file = file.path(current_cache_dir, paste0(model_name, "_bsm.RData")))
+  save(bsm, file = file.path(current_cache_dir, paste0(model_name, ".RData")))
 }
