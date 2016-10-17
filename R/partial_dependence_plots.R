@@ -1,9 +1,9 @@
-partial_dependence_plots <- function(model, model_name) {
+partial_dependence_plots <- function(model, events, model_name) {
   library(ggplot2)
   library(boot)
 
   data(drivers)
-  load(file.path(current_cache_dir, paste0(model_name, ".RData")))
+  # load(file.path(current_cache_dir, paste0(model_name, ".RData")))
 
 
   # While I'm getting this working, do it with a small subset of models.
@@ -135,8 +135,8 @@ partial_dependence_plots <- function(model, model_name) {
 
   # Making the histogram
 
-  load(file.path(current_cache_dir, paste0(model_name, "_events.RData")))
-  bsm_hist_data <- do.call(rbind, bsm_events)
+  # load(file.path(current_cache_dir, paste0(model_name, "_events.RData")))
+  bsm_hist_data <- do.call(rbind, events)
 
   # Make sure that the factor of names is exactly the same as the above plot.
   bsm_hist_data <- bsm_hist_data[, names(bsm_hist_data) %in% c("gridid", names(names))]
@@ -213,8 +213,8 @@ partial_dependence_plots <- function(model, model_name) {
   x_cutoff <- c(0.1, 0.9)
 
 
-  load(file.path(current_cache_dir, paste0(model_name, "_events.RData")))
-  bsm_hist_data <- do.call(rbind, bsm_events)
+  # load(file.path(current_cache_dir, paste0(model_name, "_events.RData")))
+  bsm_hist_data <- do.call(rbind, events)
 
   # Make sure that the factor of names is exactly the same as the above plot.
   bsm_hist_data <- bsm_hist_data[, names(bsm_hist_data) %in% c("gridid", names(names))]

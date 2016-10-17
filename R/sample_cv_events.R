@@ -2,7 +2,7 @@ library(purrr)
 library(tidyr)
 
 
-sample_cv_events <- function(drivers, model_name, sample_iter = 500) {
+sample_cv_events <- function(drivers, sample_iter = 500) {
   ## ----select-events-------------------------------------------------------
   selected_events <- eid_metadata %>%
     filter(wildlife_zoonoses == 1,
@@ -47,13 +47,18 @@ sample_cv_events <- function(drivers, model_name, sample_iter = 500) {
 
 
   # This is where we diverge from the bootstrap sampling approach. Instead of randomly sampling events with replacement, we will partition the list of events, 75:25, into training and testing datasets.
-  selected_events <- selected_events %>%
-    mutate(k = kfold(x = ., k = 4),
-           group = ifelse(k == 1, "test", "train"))
+  sampled_events <- foreach(i = 1:sample_iter) %do% {
+    mutate(selected_events, k = kfold(x = selected_events, k = 4),
+                            group = ifelse(k == 1, "test", "train"))
+  }
 
-  training_events <- filter(selected_events, group == "train")
-  testing_events <- filter(selected_events, group == "test")
-
+  # Here, we are applying dplyr `filter` functions to the entire list.
+  training_events <- sampled_events %>%
+    map(~ filter(., group == "train")) %>%
+    map(~ select(., -k, -group))
+  testing_events <- sampled_events %>%
+    map(~ filter(., group == "test")) %>%
+    map(~ select(., -k, -group))
 
   # This is the sampling function from the bootstrap workflow.
   sample_gridids <- function(to_sample) {
@@ -82,11 +87,15 @@ sample_cv_events <- function(drivers, model_name, sample_iter = 500) {
       select(-.row)
   }
 
-  training_gridids <- foreach(i = testing_events) %dopar% {
+  testing_gridids <- foreach(i = testing_events) %dopar% {
     by_row(i, sample_gridids, .collate = "row") %>%
       select(-.row)
   }
 
-  save(training_gridids, file = file.path(current_cache_dir, paste0(model_name, "_training_gridids.RData")))
-  save(testing_gridids, file = file.path(current_cache_dir, paste0(model_name, "_testing_gridids.RData")))
+  cv_gridids <- list("training_gridids" = training_gridids,
+                     "testing_gridids" = testing_gridids)
+  return(cv_gridids)
+
+  # save(training_gridids, file = file.path(current_cache_dir, paste0(model_name, "_training_gridids.RData")))
+  # save(testing_gridids, file = file.path(current_cache_dir, paste0(model_name, "_testing_gridids.RData")))
 }

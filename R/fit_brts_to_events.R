@@ -1,4 +1,4 @@
-fit_brts_to_events <- function(events) {
+fit_brts_to_events <- function(events, brt_params) {
   # load(file.path(current_cache_dir, paste0(model_name, "_events.RData")))
 
   predictor_names <- c("pop",
@@ -33,15 +33,26 @@ fit_brts_to_events <- function(events) {
     x_ind <- which(colnames(bsm_data) %in% predictor_names)
     y_ind <- which(colnames(bsm_data) %in% "presence")
 
-    model <- gbm.step(data = bsm_data,
-                      gbm.x = x_ind,
-                      gbm.y = y_ind,
-                      family = "bernoulli",
-                      tree.complexity = 3,
-                      learning.rate = 0.005,
-                      n.trees = 50,
-                      plot.main = FALSE,
-                      verbose = FALSE)
+    # This code allows us to pass in brt_params,
+    # And run the model as below.
+    model <- do.call(gbm.step,
+                     c(list(data = bsm_data,
+                            gbm.x = x_ind,
+                            gbm.y = y_ind,
+                            family = "bernoulli",
+                            plot.main = FALSE,
+                            verbose = FALSE),
+                     brt_params))
+
+    # model <- gbm.step(data = bsm_data,
+    #                   gbm.x = x_ind,
+    #                   gbm.y = y_ind,
+    #                   family = "bernoulli",
+    #                   tree.complexity = 3,
+    #                   learning.rate = 0.005,
+    #                   n.trees = 50,
+    #                   plot.main = FALSE,
+    #                   verbose = FALSE)
 
     return(model)
   }
