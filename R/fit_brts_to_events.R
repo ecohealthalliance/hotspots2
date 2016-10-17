@@ -1,5 +1,5 @@
-fit_brts_to_events <- function(model_name) {
-  load(file.path(current_cache_dir, paste0(model_name, "_events.RData")))
+fit_brts_to_events <- function(events) {
+  # load(file.path(current_cache_dir, paste0(model_name, "_events.RData")))
 
   predictor_names <- c("pop",
                        "crop",
@@ -25,10 +25,10 @@ fit_brts_to_events <- function(model_name) {
                        "livestock_mam")
 
 
-  bsm <- foreach(i = 1:length(bsm_events), .verbose = TRUE) %dopar% {
+  brts <- foreach(i = 1:length(events), .verbose = TRUE) %dopar% {
     print(paste0("About to work on model ", i, "..."))
     # gbm.step() doesn't like tibbles.
-    bsm_data <- as.data.frame(bsm_events[[i]])
+    bsm_data <- as.data.frame(events[[i]])
 
     x_ind <- which(colnames(bsm_data) %in% predictor_names)
     y_ind <- which(colnames(bsm_data) %in% "presence")
@@ -46,7 +46,8 @@ fit_brts_to_events <- function(model_name) {
     return(model)
   }
 
-  bsm <- bsm[!sapply(bsm, is.null)]
+  brts <- brts[!sapply(brts, is.null)]
 
-  save(bsm, file = file.path(current_cache_dir, paste0(model_name, ".RData")))
+  return(brts)
+  # save(brts, file = file.path(current_cache_dir, paste0(model_name, ".RData")))
 }

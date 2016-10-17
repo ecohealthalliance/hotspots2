@@ -1,5 +1,5 @@
-join_bsm_predictors <- function(model_name) {
-  load(file.path(current_cache_dir, paste0(model_name, "_gridids.RData")))
+join_predictors <- function(gridids) {
+  # load(file.path(current_cache_dir, paste0(model_name, "_gridids.RData")))
 
 
   ## ----prepare-------------------------------------------------------------
@@ -56,19 +56,20 @@ join_bsm_predictors <- function(model_name) {
   }
 
   system.time(
-  bsm_events_dec <- foreach(i = bsm_gridids) %dopar% {
+  events_dec <- foreach(i = gridids) %dopar% {
     by_row(i, time_slice_vars, .collate = "row") %>%
       select(-.row)
   }
   )
 
-  remaining_names <- predictor_names[which(!predictor_names %in% names(bsm_events_dec[[1]]))]
+  remaining_names <- predictor_names[which(!predictor_names %in% names(events_dec[[1]]))]
 
   system.time(
-  bsm_events <- foreach(i = bsm_events_dec) %dopar% {
+  events <- foreach(i = events_dec) %dopar% {
     left_join(i, drivers[, c("gridid", "lon", "lat", remaining_names)])
   }
   )
 
-  save(bsm_events, file = file.path(current_cache_dir, paste0(model_name, "_events.RData")))
+  # save(events, file = file.path(current_cache_dir, paste0(model_name, "_events.RData")))
+  return(events)
 }

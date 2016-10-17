@@ -1,4 +1,4 @@
-partial_dependence_plots <- function(model_name) {
+partial_dependence_plots <- function(model, model_name) {
   library(ggplot2)
   library(boot)
 
@@ -7,17 +7,17 @@ partial_dependence_plots <- function(model_name) {
 
 
   # While I'm getting this working, do it with a small subset of models.
-  # bsm <- bsm[1:5]
+  # model <- model[1:5]
 
 
-  to_plot <- bsm[[1]]$gbm.call$predictor.names
+  to_plot <- model[[1]]$gbm.call$predictor.names
 
   partial_dependence_raw <- list()
 
   for(v in 1:length(to_plot)) {
     cat(paste0("Working on ", to_plot[v], "...\n"))
-    pdvar <- foreach(i = 1:length(bsm), .verbose = FALSE, .combine = rbind) %do% {
-      p <- plot.gbm(bsm[[i]], i.var = to_plot[v], return.grid = TRUE)
+    pdvar <- foreach(i = 1:length(model), .verbose = FALSE, .combine = rbind) %do% {
+      p <- plot.gbm(model[[i]], i.var = to_plot[v], return.grid = TRUE)
       p <- data.frame(p, i)
     }
     pdvar$name <- to_plot[v]
@@ -53,7 +53,7 @@ partial_dependence_plots <- function(model_name) {
   # This is so that we plot the response, not the function
   pdq[, 2:4] <- colwise(inv.logit)(pdq[, 2:4])
 
-  bsmsum <- summarize_multibrt(bsm)
+  bsmsum <- summarize_multibrt(model)
   # This is for variable ordering on the plot
   pdq$name <- factor(pdq$name, levels = bsmsum$var)
 

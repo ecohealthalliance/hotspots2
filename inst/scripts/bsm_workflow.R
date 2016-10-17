@@ -33,11 +33,20 @@ sink()
 
 # Sample grid cells according to weighting and join to predictors.
 # Skip these steps if you just want to refit.
-sample_bsm_events(drivers, model_name, sample_iter)
-join_bsm_predictors(model_name)
+bsm_gridids <- sample_bsm_events(drivers, model_name, sample_iter)
+save(bsm_gridids, file = file.path(current_cache_dir, paste0(model_name, "_gridids.RData")))
+
+# load(file.path(current_cache_dir, paste0(model_name, "_gridids.RData")))
+bsm_events <- join_predictors(bsm_gridids)
+save(bsm_events, file = file.path(current_cache_dir, paste0(model_name, "_events.RData")))
 
 # You can pick up here if you want to re-fit the model.
-fit_brts_to_events(model_name)
-relative_influence_plots(model_name)
-partial_dependence_plots(model_name)
+# load(file.path(current_cache_dir, paste0(model_name, "_events.RData")))
+bsm <- fit_brts_to_events(bsm_events)
+save(bsm, file = file.path(current_cache_dir, paste0(model_name, ".RData")))
+
+# You can start here if you want to just output the plots again.
+# load(file.path(current_cache_dir, paste0(model_name, ".RData")))
+relative_influence_plots(bsm, model_name)
+partial_dependence_plots(bsm, model_name)
 

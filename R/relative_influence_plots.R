@@ -1,8 +1,8 @@
-relative_influence_plots <- function(model_name) {
+relative_influence_plots <- function(model, model_name) {
   library(ggplot2)
   
   data(drivers)
-  load(file.path(current_cache_dir, paste0(model_name, ".RData")))
+  # load(file.path(current_cache_dir, paste0(model_name, ".RData")))
 
   # Relative Influence Plot
   names <- c("past_change" = "Pasture Change",
@@ -51,8 +51,8 @@ relative_influence_plots <- function(model_name) {
                  "Environment" = "earth11_barren",
                  "Environment" = "earth12_water")
 
-  bsm_scatter <- ldply(1:length(bsm), .fun = function(i) {
-    y <- summary(bsm[[i]], plotit = FALSE)
+  bsm_scatter <- ldply(1:length(model), .fun = function(i) {
+    y <- summary(model[[i]], plotit = FALSE)
     y$i <- i
     return(y)
   }, .parallel = TRUE)
