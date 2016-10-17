@@ -2,7 +2,7 @@ library(purrr)
 library(tidyr)
 
 
-sample_events <- function(drivers, model_name, sample_iter = 100) {
+sample_bsm_events <- function(drivers, model_name, sample_iter = 100) {
   ## ----select-events-------------------------------------------------------
   selected_events <- eid_metadata %>%
     filter(wildlife_zoonoses == 1,

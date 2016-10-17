@@ -3,7 +3,7 @@ load_all()
 
 library(foreach)
 library(doParallel)
-registerDoParallel(4)
+registerDoParallel(16)
 
 # First, we'll load all datasets.
 
@@ -31,10 +31,9 @@ sink()
 
 # Make sure you name the thing "pubs_fit". cache_name should be the name of the file you wanna save.
 
-# Sample grid cells according to weighting.
+# Sample grid cells according to weighting and join to predictors.
+# Skip these steps if you just want to refit.
 sample_bsm_events(drivers, model_name, sample_iter)
-
-# Join predictors by grid_id.
 join_bsm_predictors(model_name)
 
 # You can pick up here if you want to re-fit the model.

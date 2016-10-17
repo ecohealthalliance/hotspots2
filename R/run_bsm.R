@@ -26,6 +26,7 @@ run_bsm <- function(model_name) {
 
 
   bsm <- foreach(i = 1:length(bsm_events), .verbose = TRUE) %dopar% {
+    print(paste0("About to work on model ", i, "..."))
     # gbm.step() doesn't like tibbles.
     bsm_data <- as.data.frame(bsm_events[[i]])
 
@@ -40,7 +41,7 @@ run_bsm <- function(model_name) {
                       learning.rate = 0.005,
                       n.trees = 50,
                       plot.main = FALSE,
-                      verbose = TRUE)
+                      verbose = FALSE)
 
     return(model)
   }
