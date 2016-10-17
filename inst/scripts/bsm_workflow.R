@@ -37,7 +37,7 @@ sample_bsm_events(drivers, model_name, sample_iter)
 join_bsm_predictors(model_name)
 
 # You can pick up here if you want to re-fit the model.
-run_bsm(model_name)
+fit_brts_to_events(model_name)
 relative_influence_plots(model_name)
 partial_dependence_plots(model_name)
 

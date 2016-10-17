@@ -3,7 +3,7 @@ partial_dependence_plots <- function(model_name) {
   library(boot)
 
   data(drivers)
-  load(file.path(current_cache_dir, paste0(model_name, "_bsm.RData")))
+  load(file.path(current_cache_dir, paste0(model_name, ".RData")))
 
 
   # While I'm getting this working, do it with a small subset of models.

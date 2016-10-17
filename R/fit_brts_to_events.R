@@ -1,5 +1,5 @@
-run_bsm <- function(model_name) {
-  load(file.path(cache_dir(), paste0("bsm_events.RData")))
+fit_brts_to_events <- function(model_name) {
+  load(file.path(current_cache_dir, paste0(model_name, "_events.RData")))
 
   predictor_names <- c("pop",
                        "crop",

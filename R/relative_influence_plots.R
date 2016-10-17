@@ -2,7 +2,7 @@ relative_influence_plots <- function(model_name) {
   library(ggplot2)
   
   data(drivers)
-  load(file.path(current_cache_dir, paste0(model_name, "_bsm.RData")))
+  load(file.path(current_cache_dir, paste0(model_name, ".RData")))
 
   # Relative Influence Plot
   names <- c("past_change" = "Pasture Change",
