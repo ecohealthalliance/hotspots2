@@ -2,7 +2,7 @@ library(purrr)
 library(tidyr)
 
 
-sample_cv_events <- function(drivers, sample_iter = 500) {
+sample_cv_events <- function(drivers, sample_iter = 500, weighting_var = "pubs_fit") {
   ## ----select-events-------------------------------------------------------
   selected_events <- eid_metadata %>%
     filter(wildlife_zoonoses == 1,
@@ -16,7 +16,7 @@ sample_cv_events <- function(drivers, sample_iter = 500) {
 
   presence_weights <- event_coverage %>%
     filter(event_name %in% selected_events$name) %>%
-    left_join(select(drivers, gridid, pubs_fit)) %>%
+    left_join(select_(drivers, "gridid", weighting_variable)) %>%
     group_by(event_name) %>%
     # only_if()(mutate)(weight = 1) %>%
     mutate(weight = coverage * pubs_fit / sum(coverage * pubs_fit, na.rm = TRUE),

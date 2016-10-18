@@ -2,7 +2,7 @@ library(purrr)
 library(tidyr)
 
 
-sample_bsm_events <- function(drivers, sample_iter = 100) {
+sample_bsm_events <- function(drivers, sample_iter = 100, weighting_varname = "pubs_fit") {
   ## ----select-events-------------------------------------------------------
   selected_events <- eid_metadata %>%
     filter(wildlife_zoonoses == 1,
@@ -12,19 +12,22 @@ sample_bsm_events <- function(drivers, sample_iter = 100) {
 
 
   ## ----create-sampling-weights---------------------------------------------
+
+  drivers <- drivers %>% mutate_(weighting_var = weighting_varname)
+
   set.seed(20140605)
 
   presence_weights <- event_coverage %>%
     filter(event_name %in% selected_events$name) %>%
-    left_join(select(drivers, gridid, pubs_fit)) %>%
+    left_join(select(drivers, gridid, weighting_var)) %>%
     group_by(event_name) %>%
     # only_if()(mutate)(weight = 1) %>%
-    mutate(weight = coverage * pubs_fit / sum(coverage * pubs_fit, na.rm = TRUE),
+    mutate(weight = coverage * weighting_var / sum(coverage * weighting_var, na.rm = TRUE),
            # We do this part to provide any weights where the publication value is NA.
            total_weight = sum(weight, na.rm = TRUE),
            weight = ifelse(total_weight == 0, coverage, weight)) %>%
     ungroup() %>%
-    replace_na(replace = list(weight = 0, pubs_fit = 0))
+    replace_na(replace = list(weight = 0, weighting_var = 0))
 
 
   # We now deal with this by replacing pasture and crop NAs with 0s. There are a
@@ -38,8 +41,8 @@ sample_bsm_events <- function(drivers, sample_iter = 100) {
 
 
   absence_weights <- drivers %>%
-    select(gridid, pubs_fit) %>%
-    replace_na(replace = list(pubs_fit = 0))
+    select(gridid, weighting_var) %>%
+    replace_na(replace = list(weighting_var = 0))
 
   # There are two polygons which did not produce a presence weight.
   selected_events <- selected_events %>%
@@ -52,7 +55,7 @@ sample_bsm_events <- function(drivers, sample_iter = 100) {
 
   # First, we sample randomly among events.
   sampled_events <- foreach(i = 1:sample_iter) %do% {
-    sample_n(selected_events, size = 149, replace = TRUE)
+    sample_n(selected_events, size = nrow(selected_events), replace = TRUE)
   }
 
   # Next, for each event, we select a presence and absence as described above.
@@ -65,7 +68,7 @@ sample_bsm_events <- function(drivers, sample_iter = 100) {
       data.frame(presence = 1)
 
     absence <- absence_weights %>%
-      sample_n(size = 1, weight = pubs_fit) %>%
+      sample_n(size = 1, weight = weighting_var) %>%
       select(gridid) %>%
       data.frame(presence = 0)
 

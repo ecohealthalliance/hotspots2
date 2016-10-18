@@ -13,11 +13,12 @@ data(eid_metadata)
 data(event_coverage)
 
 # Set our directory name and the number of sample iterations we want to conduct.
-model_name <- "bsm_100_iter"
+model_name <- "bsm_500_noweight"
+weighting_varname <- "land_area"  # We actually weight by land area, or we would
+                              # be weighting by the bias of the lon-lat grid.
 sample_iter <- 100
-weighting_varname <- "pubs_fit"
 brt_params <- list(tree.complexity = 3,
-                   learning.rate = 0.004,
+                   learning.rate = 0.025,
                    n.trees = 40)
 
 # Create output and cache directories.
@@ -38,7 +39,7 @@ sink()
 
 # Sample grid cells according to weighting and join to predictors.
 # Skip these steps if you just want to refit.
-bsm_gridids <- sample_bsm_events(drivers, sample_iter, weighting_varname)
+bsm_gridids <- sample_bsm_events(drivers, sample_iter, weighting_varname = weighting_varname)
 save(bsm_gridids, file = file.path(current_cache_dir, paste0(model_name, "_gridids.RData")))
 
 # load(file.path(current_cache_dir, paste0(model_name, "_gridids.RData")))
