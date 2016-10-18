@@ -16,9 +16,6 @@ drivers <- drivers_orig %>%
          iso3,
          land_area,
          gdp,
-         pop_2000,
-         crop_2000,
-         past_2000,
          poultry,
          livestock_mam) %>%
   left_join(earthenv) %>%
@@ -26,4 +23,18 @@ drivers <- drivers_orig %>%
   left_join(mamdiv) %>%
   left_join(pubs_fit)
 
+
+# Create a "drivers_full" data frame, which includes variables for decadal and
+# change variables. This is useful for plotting the output of models etc.
+data(decadal)
+data(change)
+
+drivers_full <- drivers %>%
+  left_join(filter(decadal, year == 2000)) %>%
+  select(-year) %>%
+  left_join(filter(change, year == 1995)) %>%
+  select(-year)
+
+
 save(drivers, file = file.path(data_dir(), "drivers.RData"))
+save(drivers_full, file = file.path(data_dir(), "drivers_full.RData"))

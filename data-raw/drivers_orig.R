@@ -120,6 +120,5 @@ cache_dir <- system.file("cache", package = "hotspots2")
 save(drivers_orig, file = file.path(cache_dir(), "drivers_orig.RData"))
 
 # Save decadal and change data files
-data_dir <- system.file("data", package = "hotspots2")
 save(decadal, file = file.path(data_dir(), "decadal.RData"))
 save(change, file = file.path(data_dir(), "change.RData"))
