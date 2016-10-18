@@ -13,10 +13,10 @@ data(eid_metadata)
 data(event_coverage)
 
 # Set our directory name and the number of sample iterations we want to conduct.
-model_name <- "cvm_500_iter"
-sample_iter <- 500
+model_name <- "loocvm_5_iter"
+sample_iter <- 5
 brt_params <- list(tree.complexity = 3,
-                   learning.rate = 0.001,
+                   learning.rate = 0.0025,
                    n.trees = 40)
 
 # Create output and cache directories.
@@ -38,13 +38,14 @@ sink()
 
 # Sample grid cells according to weighting and join to predictors.
 # This will return a list of two data frames, which will be unpacked.
-cv_gridids <- sample_cv_events(drivers, sample_iter)
+cv_gridids <- sample_loocv_events(drivers, sample_iter)
 list2env(cv_gridids, globalenv())
 save(training_gridids, file = file.path(current_cache_dir, paste0(model_name, "_training_gridids.RData")))
 save(testing_gridids, file = file.path(current_cache_dir, paste0(model_name, "_testing_gridids.RData")))
 
 
-# load(file.path(current_cache_dir, paste0(model_name, "_gridids.RData")))
+# load(file.path(current_cache_dir, paste0(model_name, "_training_gridids.RData")))
+# load(file.path(current_cache_dir, paste0(model_name, "_testing_gridids.RData")))
 training_events <- join_predictors(training_gridids)
 testing_events <- join_predictors(testing_gridids)
 save(training_events, file = file.path(current_cache_dir, paste0(model_name, "_training_events.RData")))
@@ -52,6 +53,7 @@ save(testing_events, file = file.path(current_cache_dir, paste0(model_name, "_te
 
 # You can pick up here if you want to re-fit the model.
 # load(file.path(current_cache_dir, paste0(model_name, "_training_events.RData")))
+# load(file.path(current_cache_dir, paste0(model_name, "_testing_events.RData")))
 cvm <- fit_brts_to_events(training_events, brt_params) # Need to refactor
 save(cvm, file = file.path(current_cache_dir, paste0(model_name, ".RData")))
 
@@ -59,4 +61,3 @@ save(cvm, file = file.path(current_cache_dir, paste0(model_name, ".RData")))
 # load(file.path(current_cache_dir, paste0(model_name, ".RData")))
 relative_influence_plots(cvm, model_name)
 partial_dependence_plots(cvm, training_events, model_name)
-

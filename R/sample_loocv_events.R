@@ -2,7 +2,7 @@ library(purrr)
 library(tidyr)
 
 
-sample_bsm_events <- function(drivers, sample_iter = 100) {
+sample_loocv_events <- function(drivers, sample_iter = 1) {
   ## ----select-events-------------------------------------------------------
   selected_events <- eid_metadata %>%
     filter(wildlife_zoonoses == 1,
@@ -12,7 +12,7 @@ sample_bsm_events <- function(drivers, sample_iter = 100) {
 
 
   ## ----create-sampling-weights---------------------------------------------
-  set.seed(20140605)
+  set.seed(20161017)
 
   presence_weights <- event_coverage %>%
     filter(event_name %in% selected_events$name) %>%
@@ -45,17 +45,20 @@ sample_bsm_events <- function(drivers, sample_iter = 100) {
   selected_events <- selected_events %>%
     filter(name %in% presence_weights$event_name)
 
+  holdout_names <- selected_events$name
 
+  holdout_names <- map(holdout_names, rep, sample_iter) %>% flatten_chr()
 
-
-  ## ----sample-events-and-gridids-------------------------------------------
-
-  # First, we sample randomly among events.
-  sampled_events <- foreach(i = 1:sample_iter) %do% {
-    sample_n(selected_events, size = 149, replace = TRUE)
+  # This is where we diverge from the original cv sampling approach.
+  # Here, we hold one each event out once as the training event.
+  training_events <- foreach(i = holdout_names) %do% {
+    filter(selected_events, !name == i)
+  }
+  testing_events <- foreach(i = holdout_names) %do% {
+    filter(selected_events, name == i)
   }
 
-  # Next, for each event, we select a presence and absence as described above.
+  # This is the sampling function from the bootstrap workflow.
   sample_gridids <- function(to_sample) {
     # print(to_sample$name)
     presence <- presence_weights %>%
@@ -75,15 +78,22 @@ sample_bsm_events <- function(drivers, sample_iter = 100) {
     return(sampled)
   }
 
-  # # There is a way to do this with purrr, but it's much faster with foreach in parallel, so we'll use that.
-  # bsm_events1 <- sampled_events %>%
-  #   map(~ by_row(., sample_gridids, .collate = "row"))
 
-  bsm_gridids <- foreach(i = sampled_events) %dopar% {
+  # We will create two data frames this time.
+  training_gridids <- foreach(i = training_events) %dopar% {
     by_row(i, sample_gridids, .collate = "row") %>%
       select(-.row)
   }
 
-  return(bsm_gridids)
-  # save(bsm_gridids, file = file.path(current_cache_dir, paste0(model_name, "_gridids.RData")))
+  testing_gridids <- foreach(i = testing_events) %dopar% {
+    by_row(i, sample_gridids, .collate = "row") %>%
+      select(-.row)
+  }
+
+  cv_gridids <- list("training_gridids" = training_gridids,
+                     "testing_gridids" = testing_gridids)
+  return(cv_gridids)
+
+  # save(training_gridids, file = file.path(current_cache_dir, paste0(model_name, "_training_gridids.RData")))
+  # save(testing_gridids, file = file.path(current_cache_dir, paste0(model_name, "_testing_gridids.RData")))
 }

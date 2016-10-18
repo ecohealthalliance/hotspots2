@@ -44,3 +44,20 @@ interactions_multibrt <- function(object, .parallel = FALSE) {
 
   intsum <- data.frame(aaply(.data = intsum, .margins = c(1, 2), .fun = mean))
 }
+
+
+predict_multibrt <- function(multibrt, newdata, type = "response", value = "mean") {
+  library(matrixStats)
+  library(purrr)
+  prediction_matrix <- multibrt %>%
+    map(~ predict(.x, newdata, n.trees = .x$n.trees, type = type)) %>%
+    flatten_dbl() %>%
+    matrix(nrow = 2)
+  if (value == "mean") {
+    return(rowMeans(prediction_matrix))
+  } else if (value == "sd") {
+    return(rowSds(prediction_matrix))
+  } else if (value == "matrix") {
+    return(prediction_matrix)
+  }
+}
