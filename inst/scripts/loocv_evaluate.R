@@ -1,11 +1,9 @@
 # library(hotspots2) # Having issues with cache_dir()
 load_all()
 
-library(dismo)
-library(caret)
 library(foreach)
 library(doParallel)
-registerDoParallel(10)
+registerDoParallel(16)
 
 # First, we'll load all datasets.
 
@@ -17,6 +15,8 @@ data(event_coverage)
 # Set our directory name and the number of sample iterations we want to conduct.
 model_name <- "loocvm_5_iter"
 sample_iter <- 5
+weighting_varname <- "pubs_fit"
+bootstrap <- FALSE
 brt_params <- list(tree.complexity = 3,
                    learning.rate = 0.0025,
                    n.trees = 40)
@@ -28,7 +28,10 @@ dir.create(current_cache_dir, showWarnings = FALSE)
 dir.create(current_out_dir, showWarnings = FALSE)
 
 
-# This is the testing workflow.
+# Here begins the testing workflow.
+
+library(dismo)
+
 # Load our testing events and models if we don't have them.
 load(file.path(current_cache_dir, paste0(model_name, ".RData")))
 load(file.path(current_cache_dir, paste0(model_name, "_testing_events.RData")))

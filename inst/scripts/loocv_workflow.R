@@ -13,8 +13,8 @@ data(eid_metadata)
 data(event_coverage)
 
 # Set our directory name and the number of sample iterations we want to conduct.
-model_name <- "loocvm_5_iter"
-sample_iter <- 5
+model_name <- "loocvm_10_iter"
+sample_iter <- 10
 weighting_varname <- "pubs_fit"
 bootstrap <- FALSE
 brt_params <- list(tree.complexity = 3,
