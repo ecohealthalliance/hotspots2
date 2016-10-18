@@ -15,6 +15,8 @@ data(event_coverage)
 # Set our directory name and the number of sample iterations we want to conduct.
 model_name <- "loocvm_5_iter"
 sample_iter <- 5
+weighting_varname <- "pubs_fit"
+bootstrap <- FALSE
 brt_params <- list(tree.complexity = 3,
                    learning.rate = 0.0025,
                    n.trees = 40)
@@ -38,7 +40,7 @@ sink()
 
 # Sample grid cells according to weighting and join to predictors.
 # This will return a list of two data frames, which will be unpacked.
-cv_gridids <- sample_loocv_events(drivers, sample_iter)
+cv_gridids <- sample_loocv_events(drivers, sample_iter, weighting_varname, bootstrap)
 list2env(cv_gridids, globalenv())
 save(training_gridids, file = file.path(current_cache_dir, paste0(model_name, "_training_gridids.RData")))
 save(testing_gridids, file = file.path(current_cache_dir, paste0(model_name, "_testing_gridids.RData")))
