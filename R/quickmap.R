@@ -169,6 +169,18 @@ quantvar <- function(x) {
   return(quantvar)
 }
 
+theme_black_nothing <- function(base_size = 12, base_family = "Helvetica")
+{
+  theme_bw(base_size = base_size, base_family = base_family) %+replace%
+    theme(
+      line = element_blank(),
+      text = element_blank(),
+      panel.background = element_rect(fill = "black", color  =  NA),
+      legend.position = "none"
+      # axis.ticks = element_text
+    )
+}
+
 theme_black <- function(base_size = 12, base_family = "") {
   theme_grey(base_size = base_size, base_family = base_family) %+replace%
     theme(
