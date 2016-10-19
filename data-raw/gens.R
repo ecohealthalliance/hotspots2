@@ -13,5 +13,4 @@ names(gens_df) <- c("lon", "lat", "gens")
 gens_df$lon <- round(gens_df$lon + 0.5) - 0.5
 gens_df$lat <- round(gens_df$lat + 0.5) - 0.5
 
-cache_dir <- system.file("cache", package = "hotspots2")
 save(gens_df, file = file.path(cache_dir(), "gens_df.RData"))

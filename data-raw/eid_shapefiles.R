@@ -20,8 +20,8 @@ event_coverage <- foreach(shapefile = shapefiles, .combine = rbind) %dopar% {
   layer <- strsplit(basename(shapefile), ".", fixed = TRUE)[[1]][1]
   print(layer)
   event_polygon <- readOGR(dsn = shapefile, layer = layer, verbose = FALSE)
-  coverage <- extract(template_raster, event_polygon,
-                      weights = TRUE, df = TRUE)
+  coverage <- raster::extract(template_raster, event_polygon,
+                              weights = TRUE, df = TRUE)
   if (nrow(coverage) > 0) {
     coverage <- coverage %>%
       mutate(event_name = layer) %>%
