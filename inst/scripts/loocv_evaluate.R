@@ -13,8 +13,8 @@ data(eid_metadata)
 data(event_coverage)
 
 # Set our directory name and the number of sample iterations we want to conduct.
-model_name <- "loocvm_5_iter"
-sample_iter <- 5
+model_name <- "loocvm_10_iter"
+sample_iter <- 10
 weighting_varname <- "pubs_fit"
 bootstrap <- FALSE
 brt_params <- list(tree.complexity = 3,
@@ -31,6 +31,7 @@ dir.create(current_out_dir, showWarnings = FALSE)
 # Here begins the testing workflow.
 
 library(dismo)
+library(ggplot2)
 
 # Load our testing events and models if we don't have them.
 load(file.path(current_cache_dir, paste0(model_name, ".RData")))
@@ -86,7 +87,7 @@ tss(e_free)
 tss(e_fixed)
 
 qplot(factor(reference), prediction, data = predictions, geom = "boxplot")
-qplot(seq_along(tss(e_free)), tss(e_free))
+qplot(e_free@t, tss(e_free))
 
 boxplot(e_fixed)
 boxplot(e_free)
