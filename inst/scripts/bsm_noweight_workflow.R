@@ -3,7 +3,7 @@ load_all()
 
 library(foreach)
 library(doParallel)
-registerDoParallel(16)
+registerDoParallel(20)
 
 # First, we'll load all datasets.
 
@@ -14,12 +14,11 @@ data(event_coverage)
 
 # Set our directory name and the number of sample iterations we want to conduct.
 model_name <- "bsm_500_noweight"
-weighting_varname <- "land_area"  # We actually weight by land area, or we would
-                              # be weighting by the bias of the lon-lat grid.
-sample_iter <- 100
+sample_iter <- 500
+weighting_varname <- "land_area"  # We actually weight by land area b/c lonlat bias.
 brt_params <- list(tree.complexity = 3,
-                   learning.rate = 0.025,
-                   n.trees = 40)
+                   learning.rate = 0.0035,
+                   n.trees = 35)
 
 # Create output and cache directories.
 current_cache_dir <- file.path(cache_dir(), model_name)
@@ -34,8 +33,6 @@ print(model_name)
 print(sample_iter)
 print(brt_params)
 sink()
-
-# Make sure you name the thing "pubs_fit".
 
 # Sample grid cells according to weighting and join to predictors.
 # Skip these steps if you just want to refit.
@@ -60,5 +57,5 @@ partial_dependence_plots(bsm, bsm_events, model_name)
 
 # Optional maps stuff
 
-quickmap(sum_presences(bsm_events), log(n))
-quickmap(sum_absences(bsm_events), log(n))
+# quickmap(sum_presences(bsm_events), log(n))
+# quickmap(sum_absences(bsm_events), log(n))

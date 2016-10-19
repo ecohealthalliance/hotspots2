@@ -3,7 +3,7 @@ load_all()
 
 library(foreach)
 library(doParallel)
-registerDoParallel(16)
+registerDoParallel(20)
 
 # First, we'll load all datasets.
 
@@ -18,8 +18,8 @@ sample_iter <- 10
 weighting_varname <- "pubs_fit"
 bootstrap <- FALSE
 brt_params <- list(tree.complexity = 3,
-                   learning.rate = 0.0025,
-                   n.trees = 40)
+                   learning.rate = 0.0035,
+                   n.trees = 35)
 
 # Create output and cache directories.
 current_cache_dir <- file.path(cache_dir(), model_name)

@@ -52,7 +52,7 @@ predict_multibrt <- function(multibrt, newdata, type = "response", value = "mean
   prediction_matrix <- multibrt %>%
     map(~ predict(.x, newdata, n.trees = .x$n.trees, type = type)) %>%
     flatten_dbl() %>%
-    matrix(nrow = 2)
+    matrix(nrow = nrow(newdata))
   if (value == "mean") {
     return(rowMeans(prediction_matrix))
   } else if (value == "sd") {
