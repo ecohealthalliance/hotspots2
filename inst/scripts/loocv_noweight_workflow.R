@@ -13,7 +13,7 @@ data(eid_metadata)
 data(event_coverage)
 
 # Set our directory name and the number of sample iterations we want to conduct.
-model_name <- "loocvm_10_iter"
+model_name <- "loocvm_noweight_10_iter"
 sample_iter <- 10
 weighting_varname <- "land_area"
 bootstrap <- FALSE
