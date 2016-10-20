@@ -82,3 +82,11 @@ save(cvm, file = file.path(current_cache_dir, paste0(model_name, ".RData")))
 # load(file.path(current_cache_dir, paste0(model_name, ".RData")))
 relative_influence_plots(cvm, model_name)
 partial_dependence_plots(cvm, training_events, model_name)
+
+# Output interactions and summary to text file
+sink(file.path(current_out_dir, "summary_interactions"))
+cat("Summary\n")
+summarize_multibrt(cvm, .parallel = TRUE)
+cat("\nInteractions\n")
+interactions_multibrt(cvm, .parallel = TRUE)
+sink()

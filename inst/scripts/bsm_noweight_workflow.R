@@ -74,6 +74,7 @@ save(bsm, file = file.path(current_cache_dir, paste0(model_name, ".RData")))
 # load(file.path(current_cache_dir, paste0(model_name, ".RData")))
 relative_influence_plots(bsm, model_name)
 partial_dependence_plots(bsm, bsm_events, model_name)
+partial_dependence_plot_truncated(bsm, bsm_events, model_name)
 
 
 
@@ -81,3 +82,10 @@ partial_dependence_plots(bsm, bsm_events, model_name)
 
 # quickmap(sum_presences(bsm_events), log(n))
 # quickmap(sum_absences(bsm_events), log(n))
+
+sink(file.path(current_out_dir, "summary_interactions"))
+cat("Summary\n")
+summarize_multibrt(bsm, .parallel = TRUE)
+cat("\nInteractions\n")
+interactions_multibrt(bsm, .parallel = TRUE)
+sink()

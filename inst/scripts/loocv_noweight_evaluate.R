@@ -86,6 +86,9 @@ tss <- function(e) {
 tss(e_free)
 tss(e_fixed)
 
+e_free@auc
+e_fixed@auc
+
 qplot(factor(reference), prediction, data = predictions, geom = "boxplot")
 qplot(e_free@t, tss(e_free))
 

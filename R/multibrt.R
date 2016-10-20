@@ -33,6 +33,7 @@ summarize_multibrt <- function(object, .parallel = FALSE) {
 
 interactions_multibrt <- function(object, .parallel = FALSE) {
   capture.output(intlist <- llply(object, function(x) gbm.interactions(x)[[2]], .parallel = .parallel))
+  intlist <- intlist[!sapply(intlist, is.null)]
 
   intsum <- array(dim = c(nrow(intlist[[1]]), ncol(intlist[[1]]), length(intlist)))
   colnames(intsum) <- colnames(intlist[[1]])
