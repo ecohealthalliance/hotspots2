@@ -13,10 +13,9 @@ data(eid_metadata)
 data(event_coverage)
 
 # Set our directory name and the number of sample iterations we want to conduct.
-model_name <- "loocvm_noweight_10_iter"
-sample_iter <- 10
+model_name <- "test_preds_noweight_100"
+sample_iter <- 100
 weighting_varname <- "land_area"
-bootstrap <- FALSE
 brt_params <- list(tree.complexity = 3,
                    learning.rate = 0.0035,
                    n.trees = 35)
@@ -58,27 +57,27 @@ print(brt_params)
 sink()
 
 # Sample grid cells according to weighting and join to predictors.
-# This will return a list of two data frames, which will be unpacked.
-cv_gridids <- sample_loocv_events(drivers, sample_iter, weighting_varname, bootstrap)
-list2env(cv_gridids, globalenv())
-save(training_gridids, file = file.path(current_cache_dir, paste0(model_name, "_training_gridids.RData")))
-save(testing_gridids, file = file.path(current_cache_dir, paste0(model_name, "_testing_gridids.RData")))
+# Skip these steps if you just want to refit.
+bsm_gridids <- sample_bsm_events(drivers, sample_iter, weighting_varname)
+save(bsm_gridids, file = file.path(current_cache_dir, paste0(model_name, "_gridids.RData")))
 
-
-# load(file.path(current_cache_dir, paste0(model_name, "_training_gridids.RData")))
-# load(file.path(current_cache_dir, paste0(model_name, "_testing_gridids.RData")))
-training_events <- join_predictors(training_gridids, predictor_names)
-testing_events <- join_predictors(testing_gridids, predictor_names)
-save(training_events, file = file.path(current_cache_dir, paste0(model_name, "_training_events.RData")))
-save(testing_events, file = file.path(current_cache_dir, paste0(model_name, "_testing_events.RData")))
+# load(file.path(current_cache_dir, paste0(model_name, "_gridids.RData")))
+bsm_events <- join_predictors(bsm_gridids, predictor_names)
+save(bsm_events, file = file.path(current_cache_dir, paste0(model_name, "_events.RData")))
 
 # You can pick up here if you want to re-fit the model.
-# load(file.path(current_cache_dir, paste0(model_name, "_training_events.RData")))
-# load(file.path(current_cache_dir, paste0(model_name, "_testing_events.RData")))
-cvm <- fit_brts_to_events(training_events, brt_params, predictor_names) # Need to refactor
-save(cvm, file = file.path(current_cache_dir, paste0(model_name, ".RData")))
+# load(file.path(current_cache_dir, paste0(model_name, "_events.RData")))
+bsm <- fit_brts_to_events(bsm_events, brt_params, predictor_names)
+save(bsm, file = file.path(current_cache_dir, paste0(model_name, ".RData")))
 
 # You can start here if you want to just output the plots again.
 # load(file.path(current_cache_dir, paste0(model_name, ".RData")))
-relative_influence_plots(cvm, model_name)
-partial_dependence_plots(cvm, training_events, model_name)
+relative_influence_plots(bsm, model_name)
+partial_dependence_plots(bsm, bsm_events, model_name)
+
+
+
+# Optional maps stuff
+
+# quickmap(sum_presences(bsm_events), log(n))
+# quickmap(sum_absences(bsm_events), log(n))

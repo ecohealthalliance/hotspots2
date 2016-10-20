@@ -19,6 +19,28 @@ weighting_varname <- "pubs_fit"
 brt_params <- list(tree.complexity = 3,
                    learning.rate = 0.0035,
                    n.trees = 35)
+predictor_names <- c("pop",
+                     "crop",
+                     "past",
+                     "pop_change",
+                     "crop_change",
+                     "past_change",
+                     "earth1_trees_needl",
+                     "earth2_trees_everg",
+                     "earth3_trees_decid",
+                     "earth4_trees_other",
+                     "earth5_shrubs",
+                     "earth6_veg_herba",
+                     "earth7_veg_manag",
+                     "earth8_veg_flood",
+                     "earth9_urban",
+                     # "earth10_snowice",
+                     # "earth11_barren",
+                     # "earth12_water",
+                     "gens",
+                     "mamdiv",
+                     "poultry",
+                     "livestock_mam")
 
 # Create output and cache directories.
 current_cache_dir <- file.path(cache_dir(), model_name)
@@ -40,12 +62,12 @@ bsm_gridids <- sample_bsm_events(drivers, sample_iter, weighting_varname)
 save(bsm_gridids, file = file.path(current_cache_dir, paste0(model_name, "_gridids.RData")))
 
 # load(file.path(current_cache_dir, paste0(model_name, "_gridids.RData")))
-bsm_events <- join_predictors(bsm_gridids)
+bsm_events <- join_predictors(bsm_gridids, predictor_names)
 save(bsm_events, file = file.path(current_cache_dir, paste0(model_name, "_events.RData")))
 
 # You can pick up here if you want to re-fit the model.
 # load(file.path(current_cache_dir, paste0(model_name, "_events.RData")))
-bsm <- fit_brts_to_events(bsm_events, brt_params)
+bsm <- fit_brts_to_events(bsm_events, brt_params, predictor_names)
 save(bsm, file = file.path(current_cache_dir, paste0(model_name, ".RData")))
 
 # You can start here if you want to just output the plots again.

@@ -1,28 +1,5 @@
-fit_brts_to_events <- function(events, brt_params) {
+fit_brts_to_events <- function(events, brt_params, predictor_names) {
   # load(file.path(current_cache_dir, paste0(model_name, "_events.RData")))
-
-  predictor_names <- c("pop",
-                       "crop",
-                       "past",
-                       "pop_change",
-                       "crop_change",
-                       "past_change",
-                       "earth1_trees_needl",
-                       "earth2_trees_everg",
-                       "earth3_trees_decid",
-                       "earth4_trees_other",
-                       "earth5_shrubs",
-                       "earth6_veg_herba",
-                       "earth7_veg_manag",
-                       "earth8_veg_flood",
-                       "earth9_urban",
-                       "earth10_snowice",
-                       "earth11_barren",
-                       "earth12_water",
-                       "gens",
-                       "mamdiv",
-                       "poultry",
-                       "livestock_mam")
 
 
   brts <- foreach(i = 1:length(events), .verbose = TRUE) %dopar% {
