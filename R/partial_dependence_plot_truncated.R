@@ -19,8 +19,9 @@ partial_dependence_plot_truncated <- function(model, events, model_name) {
     pdvar <- foreach(i = 1:length(model), .verbose = FALSE, .combine = rbind) %do% {
       p <- plot.gbm(model[[i]],
                     i.var = to_plot[v],
-                    continuous.resolution = 250, # Because we'll be subsetting
-                    return.grid = TRUE)
+                    continuous.resolution = 300, # Because we'll be subsetting
+                    return.grid = TRUE,
+                    type = "response")
       p <- data.frame(p, i)
     }
     pdvar$name <- to_plot[v]
@@ -53,8 +54,8 @@ partial_dependence_plot_truncated <- function(model, events, model_name) {
   pdq <- do.call(rbind, pdq)
 
 
-  # This is so that we plot the response, not the function
-  pdq[, 2:4] <- colwise(inv.logit)(pdq[, 2:4])
+  # This is so that we plot the response, not the function NO, NOT ANY MORE, YOU CAN DO 'TYPE'
+  # pdq[, 2:4] <- colwise(inv.logit)(pdq[, 2:4])
 
   bsmsum <- summarize_multibrt(model)
   # This is for variable ordering on the plot
