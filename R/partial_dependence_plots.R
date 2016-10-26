@@ -117,15 +117,15 @@ partial_dependence_plots <- function(model, events, model_name) {
   ymax <- 0.6 # We will use this value in two places.
   pdq[, 2:4] <- colwise(pmin, ... = ymax)(pdq[, 2:4])
 
-  # Now we can make a partial dependence plot
-  ggplot(pdq, aes(x = x)) +
-    facet_wrap(~ name, scales = "free", ncol = 4) +
-    ylim(ymin, ymax) + # Fix y axes for rigor :)
-    geom_ribbon(aes(ymin = q05, ymax = q95, fill = Group), alpha = 0.75) +
-    geom_line(aes(y = q50)) + theme_bw(base_size = 11, base_family = "") +
-    labs(x = "Value of driver",
-         y = "Relative probability of EID event occurrence (and 95% CI)",
-         title = "Partial dependence plot for zoonotic EID event occurrence")
+  # # Now we can make a partial dependence plot
+  # ggplot(pdq, aes(x = x)) +
+  #   facet_wrap(~ name, scales = "free", ncol = 4) +
+  #   ylim(ymin, ymax) + # Fix y axes for rigor :)
+  #   geom_ribbon(aes(ymin = q05, ymax = q95, fill = Group), alpha = 0.75) +
+  #   geom_line(aes(y = q50)) + theme_bw(base_size = 11, base_family = "") +
+  #   labs(x = "Value of driver",
+  #        y = "Relative probability of EID event occurrence (and 95% CI)",
+  #        title = "Partial dependence plot for zoonotic EID event occurrence")
 
 
 
@@ -184,9 +184,9 @@ partial_dependence_plots <- function(model, events, model_name) {
     geom_ribbon(data = pdq, mapping = aes(ymin = q05, ymax = q95, fill = Group), alpha = 0.75) +
     geom_line(data = pdq, mapping = aes(y = q50)) +
     theme_bw(base_size = 11, base_family = "") +
-    labs(x = "Value of driver",
-         y = "Relative probability of EID event occurrence (and 95% CI)",
-         title = "Partial dependence plot for zoonotic EID event occurrence")
+    labs(x = "Value of Predictor",
+         y = "EID Event Risk Index (and 95% CI)",
+         title = NULL)
 
 
   ggsave(file.path(current_out_dir, paste0(model_name, "_partial_dependence_hist.png")),

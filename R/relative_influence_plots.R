@@ -1,6 +1,6 @@
 relative_influence_plots <- function(model, model_name) {
   library(ggplot2)
-  
+
   data(drivers)
   # load(file.path(current_cache_dir, paste0(model_name, ".RData")))
 
@@ -64,7 +64,12 @@ relative_influence_plots <- function(model, model_name) {
   bsm_scatter$group <- factor(bsm_scatter$var)
   levels(bsm_scatter$group) <- groups
 
-  ggplot(bsm_scatter, aes(x = var, y = rel.inf, fill = group)) + geom_boxplot() + coord_flip() + scale_x_discrete(labels = names) + labs(y = "Relative Influence (%)", x = "Variable", title = "Relative influence of drivers on\n zoonotic EID event risk index") + theme_bw(base_size = 11)
+  ggplot(bsm_scatter, aes(x = var, y = rel.inf, fill = group)) +
+    geom_boxplot() +
+    coord_flip() +
+    scale_x_discrete(labels = names) +
+    labs(y = "Relative Influence (%)", x = "Predictor", title = NULL) +
+    theme_bw(base_size = 11)
 
   ggsave(file.path(current_out_dir, paste0(model_name, "_relative_influence.png")),
          height = 6, width = 6.5)

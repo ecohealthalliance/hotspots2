@@ -198,9 +198,9 @@ partial_dependence_plot_truncated <- function(model, events, model_name) {
     geom_ribbon(data = pdq_final, mapping = aes(ymin = q05, ymax = q95, fill = Group), alpha = 0.75) +
     geom_line(data = pdq_final, mapping = aes(y = q50)) +
     theme_bw(base_size = 11, base_family = "") +
-    labs(x = "Value of driver",
-         y = "Relative probability of EID event occurrence (and 95% CI)",
-         title = "Partial dependence plot for zoonotic EID event occurrence")
+    labs(x = "Value of Predictor",
+         y = "EID Event Risk Index (and 95% CI)",
+         title = NULL)
 
   ggsave(file.path(current_out_dir, paste0(model_name, "_partial_dependence_hist_truncated.pdf")),
          height = 9, width = 8.5)
