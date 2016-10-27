@@ -1,6 +1,6 @@
 partial_dependence_plots <- function(model, events, model_name) {
   library(ggplot2)
-  library(boot)
+  # library(boot)
 
   data(drivers)
   # load(file.path(current_cache_dir, paste0(model_name, ".RData")))
@@ -17,7 +17,7 @@ partial_dependence_plots <- function(model, events, model_name) {
   for(v in 1:length(to_plot)) {
     cat(paste0("Working on ", to_plot[v], "...\n"))
     pdvar <- foreach(i = 1:length(model), .verbose = FALSE, .combine = rbind) %do% {
-      p <- plot.gbm(model[[i]], i.var = to_plot[v], return.grid = TRUE)
+      p <- plot.gbm(model[[i]], i.var = to_plot[v], return.grid = TRUE, type = "response")
       p <- data.frame(p, i)
     }
     pdvar$name <- to_plot[v]
@@ -51,7 +51,7 @@ partial_dependence_plots <- function(model, events, model_name) {
 
 
   # This is so that we plot the response, not the function
-  pdq[, 2:4] <- colwise(inv.logit)(pdq[, 2:4])
+  # pdq[, 2:4] <- colwise(inv.logit)(pdq[, 2:4])
 
   bsmsum <- summarize_multibrt(model)
   # This is for variable ordering on the plot
@@ -117,15 +117,15 @@ partial_dependence_plots <- function(model, events, model_name) {
   ymax <- 0.6 # We will use this value in two places.
   pdq[, 2:4] <- colwise(pmin, ... = ymax)(pdq[, 2:4])
 
-  # Now we can make a partial dependence plot
-  ggplot(pdq, aes(x = x)) +
-    facet_wrap(~ name, scales = "free", ncol = 4) +
-    ylim(ymin, ymax) + # Fix y axes for rigor :)
-    geom_ribbon(aes(ymin = q05, ymax = q95, fill = Group), alpha = 0.75) +
-    geom_line(aes(y = q50)) + theme_bw(base_size = 11, base_family = "") +
-    labs(x = "Value of driver",
-         y = "Relative probability of EID event occurrence (and 95% CI)",
-         title = "Partial dependence plot for zoonotic EID event occurrence")
+  # # Now we can make a partial dependence plot
+  # ggplot(pdq, aes(x = x)) +
+  #   facet_wrap(~ name, scales = "free", ncol = 4) +
+  #   ylim(ymin, ymax) + # Fix y axes for rigor :)
+  #   geom_ribbon(aes(ymin = q05, ymax = q95, fill = Group), alpha = 0.75) +
+  #   geom_line(aes(y = q50)) + theme_bw(base_size = 11, base_family = "") +
+  #   labs(x = "Value of driver",
+  #        y = "Relative probability of EID event occurrence (and 95% CI)",
+  #        title = "Partial dependence plot for zoonotic EID event occurrence")
 
 
 
@@ -184,110 +184,13 @@ partial_dependence_plots <- function(model, events, model_name) {
     geom_ribbon(data = pdq, mapping = aes(ymin = q05, ymax = q95, fill = Group), alpha = 0.75) +
     geom_line(data = pdq, mapping = aes(y = q50)) +
     theme_bw(base_size = 11, base_family = "") +
-    labs(x = "Value of driver",
-         y = "Relative probability of EID event occurrence (and 95% CI)",
-         title = "Partial dependence plot for zoonotic EID event occurrence")
+    labs(x = "Value of Predictor",
+         y = "EID Event Risk Index (and 95% CI)",
+         title = NULL)
 
 
   ggsave(file.path(current_out_dir, paste0(model_name, "_partial_dependence_hist.png")),
          height = 9, width = 8.5)
   ggsave(file.path(current_out_dir, paste0(model_name, "_partial_dependence_hist.pdf")),
-         height = 9, width = 8.5)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  # ALTERNATE FUTURE VERSION
-  # In this version, we only plot the (0.05, 0.95) range of the x axis.
-
-  x_cutoff <- c(0.1, 0.9)
-
-
-  # load(file.path(current_cache_dir, paste0(model_name, "_events.RData")))
-  bsm_hist_data <- do.call(rbind, events)
-
-  # Make sure that the factor of names is exactly the same as the above plot.
-  bsm_hist_data <- bsm_hist_data[, names(bsm_hist_data) %in% c("gridid", names(names))]
-  bsm_hist_data <- reshape2::melt(bsm_hist_data, id.vars = "gridid")
-  bsm_hist_data$variable <- revalue(bsm_hist_data$variable, replace = names)
-  names(bsm_hist_data) <- c("gridid", "name", "x")
-
-  # This is the part where I rescale the axes.
-  # I'm going to try creating the histogram *after* we subset.
-  hist_final <- foreach(name = unique(pdq$name), .combine = rbind) %do% {
-    pdq_subset <- pdq[pdq$name == name, ]
-    bsm_hist_data_sub <- bsm_hist_data[bsm_hist_data$name == name, ]
-
-    xmin <- quantile(bsm_hist_data_sub$x, probs = x_cutoff, na.rm = TRUE)[1]
-    xmax <- quantile(bsm_hist_data_sub$x, probs = x_cutoff, na.rm = TRUE)[2]
-    # ymax <- max(pdq_subset$q95, na.rm = TRUE)
-
-    bsm_hist_data_sub <- bsm_hist_data_sub[bsm_hist_data_sub$x >= xmin & bsm_hist_data_sub$x <= xmax, ]
-
-    p <- ggplot(mapping = aes(x = x)) +
-      facet_wrap(~ name, scales = "free", ncol = 4) +
-      geom_histogram(data = bsm_hist_data_sub)
-
-    plotted_data <- ggplot_build(p)$data[[1]]
-    plotted_data$name <- name
-    plotted_data <- plotted_data[, c("name", "x", "y")]
-
-    # Here is where I'd rescale the y axis.
-    yminrm <- sum(plotted_data[plotted_data$x < xmin, "y"])
-    ymaxrm <- sum(plotted_data[plotted_data$x > xmax, "y"])
-
-
-    # We use >= and <= here else Snow/Ice throws an error.
-    plotted_data <- plotted_data[plotted_data$x >= xmin & plotted_data$x <= xmax, ]
-    plotted_data[1, "y"] <- plotted_data[1, "y"] + yminrm
-    plotted_data[nrow(plotted_data), "y"] <- plotted_data[nrow(plotted_data), "y"] + ymaxrm
-
-    plotted_data$y <-  plotted_data$y * (ymax / max(plotted_data$y))
-    plotted_data
-  }
-
-  hist_final$name <- factor(hist_final$name, levels = levels(pdq$name))
-
-
-  # We also have to do this to pdq now
-  pdq_final <- foreach(name = unique(pdq$name), .combine = rbind) %do% {
-    pdq_subset <- pdq[pdq$name == name, ]
-    plotted_data_sub <- plotted_data[plotted_data$name == name, ]
-    bsm_hist_data_sub <- bsm_hist_data[bsm_hist_data$name == name, ]
-
-    xmin <- quantile(bsm_hist_data_sub$x, probs = x_cutoff, na.rm = TRUE)[1]
-    xmax <- quantile(bsm_hist_data_sub$x, probs = x_cutoff, na.rm = TRUE)[2]
-    # ymax <- max(pdq_subset$q95, na.rm = TRUE)
-
-    pdq_subset <- pdq_subset[pdq_subset$x >= xmin & pdq_subset$x <= xmax, ]
-    pdq_subset
-  }
-
-
-  ggplot(mapping = aes(x = x)) +
-    facet_wrap(~ name, scales = "free_x", ncol = 4) +
-    ylim(0, ymax) + # Fix y axes for rigor :)
-    geom_segment(data = hist_final, mapping = aes(y = 0, yend = y, xend = x),
-                 color = "#999999") +
-    geom_ribbon(data = pdq_final, mapping = aes(ymin = q05, ymax = q95, fill = Group), alpha = 0.75) +
-    geom_line(data = pdq_final, mapping = aes(y = q50)) +
-    theme_bw(base_size = 11, base_family = "") +
-    labs(x = "Value of driver",
-         y = "Relative probability of EID event occurrence (and 95% CI)",
-         title = "Partial dependence plot for zoonotic EID event occurrence")
-
-  ggsave(file.path(current_out_dir, paste0(model_name, "_partial_dependence_hist_truncated.pdf")),
-         height = 9, width = 8.5)
-  ggsave(file.path(current_out_dir, paste0(model_name, "_partial_dependence_hist_truncated.png")),
          height = 9, width = 8.5)
 }

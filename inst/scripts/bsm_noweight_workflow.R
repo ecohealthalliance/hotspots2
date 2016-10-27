@@ -71,6 +71,7 @@ bsm <- fit_brts_to_events(bsm_events, brt_params, predictor_names)
 save(bsm, file = file.path(current_cache_dir, paste0(model_name, ".RData")))
 
 # You can start here if you want to just output the plots again.
+# load(file.path(current_cache_dir, paste0(model_name, "_events.RData")))
 # load(file.path(current_cache_dir, paste0(model_name, ".RData")))
 relative_influence_plots(bsm, model_name)
 partial_dependence_plots(bsm, bsm_events, model_name)
@@ -86,6 +87,7 @@ partial_dependence_plot_truncated(bsm, bsm_events, model_name)
 sink(file.path(current_out_dir, "summary_interactions"))
 cat("Summary\n")
 summarize_multibrt(bsm, .parallel = TRUE)
-cat("\nInteractions\n")
-interactions_multibrt(bsm, .parallel = TRUE)
 sink()
+
+intsum <- interaction_summary_multibrt(bsm, .parallel = TRUE)
+write.csv(intsum, file = file.path(current_out_dir, "interactions.csv"), row.names = FALSE)

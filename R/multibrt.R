@@ -44,8 +44,28 @@ interactions_multibrt <- function(object, .parallel = FALSE) {
   }
 
   intsum <- data.frame(aaply(.data = intsum, .margins = c(1, 2), .fun = mean))
+  return(intsum)
 }
 
+
+interaction_summary_multibrt <- function(object, .parallel = FALSE) {
+  intlist <- llply(object, function(x) gbm.interactions(x)[[1]], .parallel = .parallel)
+  intlist <- intlist[!sapply(intlist, is.null)]
+  intsum <- intlist %>%
+    map(.x = intlist, .f = ~ select(.x, -dplyr::contains("index"))) %>%
+    bind_rows() %>%
+    group_by(var1.names, var2.names) %>%
+    summarize(int.mean = mean(int.size, na.rm = TRUE),
+              int.min = min(int.size, na.rm = TRUE),
+              int.q25 = quantile(int.size, probs = 0.25, na.rm = TRUE),
+              int.med = median(int.size, na.rm = TRUE),
+              int.q75 = quantile(int.size, probs = 0.75, na.rm = TRUE),
+              int.max = max(int.size, na.rm = TRUE)) %>%
+    ungroup() %>%
+    arrange(-int.med)
+
+  return(intsum)
+}
 
 predict_multibrt <- function(multibrt, newdata, type = "response", value = "mean") {
   library(matrixStats)

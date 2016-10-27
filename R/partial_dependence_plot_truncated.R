@@ -19,8 +19,9 @@ partial_dependence_plot_truncated <- function(model, events, model_name) {
     pdvar <- foreach(i = 1:length(model), .verbose = FALSE, .combine = rbind) %do% {
       p <- plot.gbm(model[[i]],
                     i.var = to_plot[v],
-                    continuous.resolution = 250, # Because we'll be subsetting
-                    return.grid = TRUE)
+                    continuous.resolution = 300, # Because we'll be subsetting
+                    return.grid = TRUE,
+                    type = "response")
       p <- data.frame(p, i)
     }
     pdvar$name <- to_plot[v]
@@ -53,8 +54,8 @@ partial_dependence_plot_truncated <- function(model, events, model_name) {
   pdq <- do.call(rbind, pdq)
 
 
-  # This is so that we plot the response, not the function
-  pdq[, 2:4] <- colwise(inv.logit)(pdq[, 2:4])
+  # This is so that we plot the response, not the function NO, NOT ANY MORE, YOU CAN DO 'TYPE'
+  # pdq[, 2:4] <- colwise(inv.logit)(pdq[, 2:4])
 
   bsmsum <- summarize_multibrt(model)
   # This is for variable ordering on the plot
@@ -197,9 +198,9 @@ partial_dependence_plot_truncated <- function(model, events, model_name) {
     geom_ribbon(data = pdq_final, mapping = aes(ymin = q05, ymax = q95, fill = Group), alpha = 0.75) +
     geom_line(data = pdq_final, mapping = aes(y = q50)) +
     theme_bw(base_size = 11, base_family = "") +
-    labs(x = "Value of driver",
-         y = "Relative probability of EID event occurrence (and 95% CI)",
-         title = "Partial dependence plot for zoonotic EID event occurrence")
+    labs(x = "Value of Predictor",
+         y = "EID Event Risk Index (and 95% CI)",
+         title = NULL)
 
   ggsave(file.path(current_out_dir, paste0(model_name, "_partial_dependence_hist_truncated.pdf")),
          height = 9, width = 8.5)
