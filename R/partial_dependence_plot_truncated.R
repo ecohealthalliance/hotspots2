@@ -83,7 +83,8 @@ partial_dependence_plot_truncated <- function(model, events, model_name) {
              "earth4_trees_other" = "Mixed/Other Trees",
              "past" = "Pasture",
              "earth2_trees_everg" = "Evergreen Broadleaf\nTrees",
-             "livestock_mam" = "Livestock Mammal\nHeadcount")
+             "livestock_mam" = "Livestock Mammal\nHeadcount",
+             "pubs_fit" = "Reporting Effort")
 
   groups <- list("Human Activity" = "pop",
                  "Human Activity" = "pop_change",
@@ -93,6 +94,7 @@ partial_dependence_plot_truncated <- function(model, events, model_name) {
                  "Human Activity" = "crop_change",
                  "Human Activity" = "earth9_urban",
                  "Human Activity" = "earth7_veg_manag",
+                 "Human Activity" = "pubs_fit",
                  "Animals" = "mamdiv",
                  "Animals" = "livestock_mam",
                  "Animals" = "poultry",

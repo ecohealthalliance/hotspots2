@@ -26,7 +26,8 @@ relative_influence_plots <- function(model, model_name) {
              "earth4_trees_other" = "Mixed/Other Trees",
              "past" = "Pasture",
              "earth2_trees_everg" = "Evergreen Broadleaf\nTrees",
-             "livestock_mam" = "Livestock Mammal\nHeadcount")
+             "livestock_mam" = "Livestock Mammal\nHeadcount",
+             "pubs_fit" = "Reporting Effort")
 
   groups <- list("Human Activity" = "pop",
                  "Human Activity" = "pop_change",
@@ -34,6 +35,9 @@ relative_influence_plots <- function(model, model_name) {
                  "Human Activity" = "past",
                  "Human Activity" = "past_change",
                  "Human Activity" = "crop_change",
+                 "Human Activity" = "earth9_urban",
+                 "Human Activity" = "earth7_veg_manag",
+                 "Human Activity" = "pubs_fit",
                  "Animals" = "mamdiv",
                  "Animals" = "livestock_mam",
                  "Animals" = "poultry",
@@ -44,9 +48,7 @@ relative_influence_plots <- function(model, model_name) {
                  "Environment" = "earth4_trees_other",
                  "Environment" = "earth5_shrubs",
                  "Environment" = "earth6_veg_herba",
-                 "Human Activity" = "earth7_veg_manag",
                  "Environment" = "earth8_veg_flood",
-                 "Human Activity" = "earth9_urban",
                  "Environment" = "earth10_snowice",
                  "Environment" = "earth11_barren",
                  "Environment" = "earth12_water")
