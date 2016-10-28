@@ -33,5 +33,5 @@ Suggests:
     reshape2,
     stringr,
     matrixStats
-License: None
+License: Apache 2.0
 Roxygen: list(wrap = FALSE)
