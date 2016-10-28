@@ -24,9 +24,9 @@ predictor_names <- c("pop",
                      "earth7_veg_manag",
                      "earth8_veg_flood",
                      "earth9_urban",
-                     "earth10_snowice",
-                     "earth11_barren",
-                     "earth12_water",
+                     # "earth10_snowice",
+                     # "earth11_barren",
+                     # "earth12_water",
                      "gens",
                      "mamdiv",
                      "poultry",
@@ -37,9 +37,15 @@ predictor_names <- c("pop",
 # examine a correlation matrix. We'll manually pick variables of interest to
 # look for correlations.
 
+pdf("inst/out/additional_figures/correlations.pdf", height = 8, width = 8)
 drivers_full %>%
   select(one_of(predictor_names)) %>%
   ggcorr(label = TRUE)
+dev.off()
+
+drivers_full %>%
+  select(one_of(predictor_names)) %>%
+  cor()
 
 to_examine <- c("pop",
                 "pop_change",
@@ -59,10 +65,37 @@ drivers_full %>%
   select(one_of(to_examine)) %>%
   ggcorr(label = TRUE)
 
+pdf("inst/out/additional_figures/scatterplotmatrix.pdf", height = 15, width = 15)
 drivers_full %>%
   select(one_of(to_examine)) %>%
   sample_n(500) %>%
-  ggpairs() + theme_bw()
+  ggpairs(lower = list(continuous = wrap("points",
+                                         size = 1.5,
+                                         alpha = 0.25))) +
+  theme_nothing()
+dev.off()
+
+pdf("inst/out/additional_figures/scatterplotmatrix.pdf", height = 15, width = 15)
+drivers_full %>%
+  select(one_of(to_examine)) %>%
+  sample_n(250) %>%
+  ggpairs(lower = list(continuous = wrap("points",
+                                         size = 1.5,
+                                         alpha = 0.5))) +
+  theme_nothing()
+dev.off()
+
+png("inst/out/additional_figures/scatterplotmatrix.png", height = 1500, width = 1500)
+drivers_full %>%
+  select(one_of(to_examine)) %>%
+  sample_n(500) %>%
+  ggpairs(lower = list(continuous = wrap("points",
+                                         size = 1.5,
+                                         alpha = 0.25))) +
+  theme_nothing()
+dev.off()
+
+
 
 # And with log transforms
 drivers_full %>%

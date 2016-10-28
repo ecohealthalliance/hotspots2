@@ -39,7 +39,7 @@ ggplot() +
   geom_path(aes(x = lon, y = lat, group = group), data = map.world(), inherit.aes = FALSE, color = "white", size = 0.15) +
   coord_fixed() +
   scale_fill_gradientn(colours = viridis(numcolors),
-                       guide = guide_colorbar(title = "Predicted\nPublications")) +
+                       guide = guide_colorbar(title = "Publications")) +
   theme_black_legend() +
   labs(x = NULL, y = NULL)
 
@@ -52,7 +52,7 @@ ggplot() +
   geom_path(aes(x = lon, y = lat, group = group), data = map.world(), inherit.aes = FALSE, color = "white", size = 0.15) +
   coord_fixed() +
   scale_fill_gradientn(colours = viridis(numcolors),
-                       guide = guide_colorbar(title = "Predicted\nPublications")) +
+                       guide = guide_colorbar(title = "Publications")) +
   theme_black_legend() +
   labs(x = NULL, y = NULL)
 
@@ -62,7 +62,7 @@ ggplot() +
   geom_path(aes(x = lon, y = lat, group = group), data = map.world(), inherit.aes = FALSE, color = "white", size = 0.15) +
   coord_fixed() +
   scale_fill_gradientn(colours = viridis(numcolors),
-                       guide = guide_colorbar(title = "Predicted\nPublications")) +
+                       guide = guide_colorbar(title = "Publications")) +
   theme_black_legend() +
   labs(x = NULL, y = NULL)
 
