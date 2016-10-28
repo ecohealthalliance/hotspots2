@@ -126,7 +126,7 @@ partial_dependence_plots <- function(model, events, model_name) {
   #   geom_ribbon(aes(ymin = q05, ymax = q95, fill = Group), alpha = 0.75) +
   #   geom_line(aes(y = q50)) + theme_bw(base_size = 11, base_family = "") +
   #   labs(x = "Value of driver",
-  #        y = "Relative probability of EID event occurrence (and 95% CI)",
+  #        y = "Relative probability of EID event occurrence (and 90% CI)",
   #        title = "Partial dependence plot for zoonotic EID event occurrence")
 
 
@@ -187,7 +187,7 @@ partial_dependence_plots <- function(model, events, model_name) {
     geom_line(data = pdq, mapping = aes(y = q50)) +
     theme_bw(base_size = 11, base_family = "") +
     labs(x = "Value of Predictor",
-         y = "EID Event Risk Index (and 95% CI)",
+         y = "EID Event Risk Index (and 90% CI)",
          title = NULL)
 
 

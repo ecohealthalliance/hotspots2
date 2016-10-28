@@ -89,5 +89,31 @@ cat("Summary\n")
 summarize_multibrt(bsm, .parallel = TRUE)
 sink()
 
-intsum <- interaction_summary_multibrt(bsm, .parallel = TRUE)
+intsum <- interaction_summary_multibrt(bsm, .parallel = FALSE)
+names <- c("past_change" = "Pasture Change",
+           "earth6_veg_herba" = "Herbaceous Veg.",
+           "earth9_urban" = "Urban/Built-up",
+           "crop" = "Cropland",
+           "mamdiv" = "Mammal Biodiversity",
+           "pop_change" = "Population Change",
+           "earth5_shrubs" = "Shrubs",
+           "earth7_veg_manag" = "Cultivated/Managed\nVeg.",
+           "earth12_water" = "Water",
+           "earth10_snowice" = "Snow/Ice",
+           "poultry" = "Poultry",
+           "earth11_barren" = "Barren",
+           "earth1_trees_needl" = "Evergreen/Deciduous\nNeedleleaf Trees",
+           "earth8_veg_flood" = "Regularly Flooded Veg.",
+           "earth3_trees_decid" = "Deciduous Broadleaf\nTrees",
+           "pop" = "Population",
+           "crop_change" = "Cropland Change",
+           "gens" = "Global Envir. Strat.",
+           "earth4_trees_other" = "Mixed/Other Trees",
+           "past" = "Pasture",
+           "earth2_trees_everg" = "Evergreen Broadleaf\nTrees",
+           "livestock_mam" = "Livestock Mammal\nHeadcount",
+           "pubs_fit" = "Reporting Effort")
+intsum$var1.names <- revalue(intsum$var1.names, replace = names)
+intsum$var2.names <- revalue(intsum$var2.names, replace = names)
+
 write.csv(intsum, file = file.path(current_out_dir, "interactions.csv"), row.names = FALSE)
