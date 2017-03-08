@@ -40,15 +40,13 @@ load(file.path(current_cache_dir, paste0(model_name, ".RData")))
 load(file.path(current_cache_dir, paste0(model_name, "_testing_events.RData")))
 
 # Maybe everything will be super compatible if I just flatten it all.
-kfm <- flatten(kfm)
-testing_events <- flatten(testing_events)
+# kfm <- flatten(kfm)
+# testing_events <- flatten(testing_events)
 
 
 ##### ----- #####
 
-# I don't think we're going to worry about this:
-
-
+# I don't think we're going to worry about this.
 # Occasionally, models fail to fit.
 # These functions help us figure out which are the holdout events for the models.
 # name_of_holdout <- function(event) unique(event$name)
@@ -66,25 +64,30 @@ testing_events <- flatten(testing_events)
 ##### ----- #####
 
 # The loop will go here.
-predictions <- foreach(i = 1:length(kfm), .combine = "rbind") %do% {
-  print(paste0("Working on ", i, "..."))
-  events_to_test <- as.data.frame(testing_events[[i]])
-  model_to_test <- kfm[[i]]
+predictions <- foreach(i = 1:length(kfm)) %do% {
+  iter_models <- kfm[[i]]
+  iter_events <- testing_events[[i]]
+  iter_predictions <- foreach(i = 1:length(iter_models), .combine = "rbind") %do% {
+    print(paste0("Working on ", i, "..."))
+    events_to_test <- as.data.frame(iter_events[[i]])
+    model_to_test <- iter_models[[i]]
 
-  print("Running predictions...")
-  holdout_reference <- events_to_test$presence
-  holdout_prediction <- predict(model_to_test, events_to_test, n.trees = model_to_test$n.trees, type = "response")
+    print("Running predictions...")
+    holdout_reference <- events_to_test$presence
+    holdout_prediction <- predict(model_to_test, events_to_test, n.trees = model_to_test$n.trees)
 
-  predictions <- data.frame(reference = holdout_reference, prediction = holdout_prediction)
+    predictions <- data.frame(reference = holdout_reference, prediction = holdout_prediction)
+  }
 }
 
 # Either use dismo evaluate or caret confusionMatrix
-e_fixed <- dismo::evaluate(p = predictions[as.logical(predictions$reference), "prediction"],
-                           a = predictions[!predictions$reference, "prediction"],
-                           tr = 0.5)
-
-e_free <- dismo::evaluate(p = predictions[as.logical(predictions$reference), "prediction"],
-                          a = predictions[!predictions$reference, "prediction"])
+e_fixed <- predictions %>%
+  map(~ dismo::evaluate(p = .x[as.logical(.x$reference), "prediction"],
+                        a = .x[!.x$reference, "prediction"],
+                        tr = 0.5))
+e_free <- predictions %>%
+  map(~ dismo::evaluate(p = .x[as.logical(.x$reference), "prediction"],
+                        a = .x[!.x$reference, "prediction"]))
 
 plot(e_free, "ROC")
 plot(e_free, "TPR")
@@ -94,8 +97,8 @@ tss <- function(e) {
   return(unname(tss))
 }
 
-tss(e_free)
-tss(e_fixed)
+e_free %>% map(tss)
+e_fixed %>% map(tss)
 
 e_free@auc
 e_fixed@auc
@@ -107,3 +110,4 @@ boxplot(e_fixed)
 boxplot(e_free)
 density(e_fixed)
 density(e_free)
+

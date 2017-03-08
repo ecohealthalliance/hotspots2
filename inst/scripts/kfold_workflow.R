@@ -65,14 +65,14 @@ save(kfold_gridids, file = file.path(current_cache_dir, paste0(model_name, "_gri
 
 ##### Do some extra work  to unfurl the DF into a longer one of stuff to be fit. #####
 unfurl_training_gridids <- function(x) {
-   foreach(i = sort(unique(x$fold))) %do% {
-      filter(x, !fold == i)
-   }
+  foreach(i = sort(unique(x$fold))) %do% {
+    filter(x, !fold == i)
+  }
 }
 unfurl_testing_gridids <- function(x) {
-   foreach(i = sort(unique(x$fold))) %do% {
-      filter(x, fold == i)
-   }
+  foreach(i = sort(unique(x$fold))) %do% {
+    filter(x, fold == i)
+  }
 }
 # load(file.path(current_cache_dir, paste0(model_name, "_gridids.RData")))
 training_gridids <- map(kfold_gridids, unfurl_training_gridids)
@@ -95,7 +95,8 @@ save(testing_events, file = file.path(current_cache_dir, paste0(model_name, "_te
 # load(file.path(current_cache_dir, paste0(model_name, "_testing_events.RData")))
 # cvm <- fit_brts_to_events(training_events, brt_params, predictor_names) # Need to refactor
 ##### Because we're one level deep in the list, we use `map()` #####
-kfm <- map(training_events, fit_brts_to_events, brt_params, predictor_names)
+
+kfm <- map(training_events, fit_brts_to_events, brt_params, predictor_names, null_behavior = "rerun")
 save(kfm, file = file.path(current_cache_dir, paste0(model_name, ".RData")))
 
 kfm_flat <- flatten(kfm)
