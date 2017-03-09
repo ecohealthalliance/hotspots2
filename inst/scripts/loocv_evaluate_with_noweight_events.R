@@ -78,6 +78,9 @@ predictions <- foreach(i = unique(holdout_names), .combine = rbind) %dopar% {
     select(-gridid, reference = presence, prediction = weighted_output)
   predictions
 }
+# In this version, I didn't create the prediction THEN join to the drivers, I
+# predicted on the whole data frame and then joined selectively to the
+# drivers.
 
 names(predictions) <- c("prediction", "reference")
 

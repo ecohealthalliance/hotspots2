@@ -5,6 +5,7 @@ library(foreach)
 library(doParallel)
 registerDoParallel(20)
 
+
 # First, we'll load all datasets.
 
 data(decadal)
@@ -37,7 +38,7 @@ library(purrr)
 
 # Load our testing events and models if we don't have them.
 load(file.path(current_cache_dir, paste0(model_name, ".RData")))
-load(file.path(current_cache_dir, paste0(model_name, "_testing_events.RData")))
+load(file.path(cache_dir(),"kfold_noweight_10x100_iter", paste0("kfold_noweight_10x100_iter", "_testing_events.RData")))
 
 
 ##### This part of the script deals with the probably only one null model we have #####
@@ -50,32 +51,50 @@ kfm <- map2(kfm, keeps, ~ keep(.x, .y))
 testing_events <- map2(testing_events, keeps, ~ keep(.x, .y))
 
 
+##### This workflow runs with the flattened version #####
+
+# I think I need to create the pubs_weight column first.
+pubs_weight <- drivers_full %>%
+  select(gridid, pubs_fit) %>%
+  mutate(pubs_weight = pubs_fit / sum(pubs_fit, na.rm = TRUE))
+pubs_weight[is.na(pubs_weight)] <- 0
+
+
 ##### The actual meat of the evaluation #####
 predictions <- foreach(i = 1:length(kfm)) %do% {
+  print(paste0("Working on ", i, "..."))
   iter_models <- kfm[[i]]
   iter_events <- testing_events[[i]]
-  iter_predictions <- foreach(i = 1:length(iter_models), .combine = "rbind") %do% {
-    print(paste0("Working on ", i, "..."))
-    events_to_test <- as.data.frame(iter_events[[i]])
-    model_to_test <- iter_models[[i]]
+  iter_predictions <- foreach(j = 1:length(iter_models), .combine = "rbind") %do% {
+    # print(paste0("Working on ", j, "..."))
+    events_to_test <- as.data.frame(iter_events[[j]])
+    model_to_test <- iter_models[[j]]
 
-    print("Running predictions...")
-    holdout_reference <- events_to_test$presence
-    holdout_prediction <- predict(model_to_test, events_to_test, n.trees = model_to_test$n.trees)
+    # print("Running predictions...")
+    response <- predict(model_to_test, events_to_test, n.trees = model_to_test$n.trees, type = "response")
 
-    predictions <- data.frame(reference = holdout_reference, prediction = holdout_prediction)
+    predictions <- events_to_test %>%
+      select(gridid, reference = presence) %>%
+      cbind(response) %>%
+      left_join(pubs_weight, by = "gridid") %>% # The "by" is there to shut the function up.
+      mutate(prediction = response * pubs_weight,
+             prediction2 = response * pubs_weight * 0.5 / mean(response * pubs_weight, na.rm = TRUE)) %>%
+      select(reference, response, pubs_weight, prediction, prediction2)
+    predictions
   }
 }
 
+##### The variable named 'prediction' is the weighted response. #####
+
 # Either use dismo evaluate or caret confusionMatrix
-e_fixed <- predictions %>%
-  map(~ dismo::evaluate(p = .x[as.logical(.x$reference), "prediction"],
-                        a = .x[!.x$reference, "prediction"],
-                        tr = 0.5))
 e_free <- predictions %>%
   map(~ dismo::evaluate(p = .x[as.logical(.x$reference), "prediction"],
                         a = .x[!.x$reference, "prediction"]))
 
+# We will set here the treshold to that which maximizes kappa.
+e_fixed <- map2(predictions, e_free, ~ dismo::evaluate(p = .x[as.logical(.x$reference), "prediction"],
+                                                       a = .x[!.x$reference, "prediction"],
+                                                       tr = threshold(.y)$kappa))
 
 tss <- function(e) {
   tss <- e@TPR + e@TNR - 1
@@ -91,7 +110,7 @@ kfm_tss <- e_fixed %>% map_dbl(tss)
 
 
 # Output interactions and summary to text file
-sink(file.path(current_out_dir, "cv_summary_unflattened"))
+sink(file.path(current_out_dir, "cv_with_noweight_summary_unflattened"))
 cat("AUC (vector, mean, sd, quantiles)\n")
 kfm_auc
 mean(kfm_auc)
