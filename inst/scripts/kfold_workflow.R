@@ -113,3 +113,4 @@ summarize_multibrt(kfm_flat, .parallel = TRUE)
 cat("\nInteractions\n")
 interactions_multibrt(kfm_flat, .parallel = TRUE)
 sink()
+

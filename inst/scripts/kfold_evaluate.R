@@ -39,31 +39,22 @@ library(purrr)
 load(file.path(current_cache_dir, paste0(model_name, ".RData")))
 load(file.path(current_cache_dir, paste0(model_name, "_testing_events.RData")))
 
-# Maybe everything will be super compatible if I just flatten it all.
+
+##### This part of the script deals with the probably only one null model we have #####
+##### Although as of 2017-03-08 8:13 PM the models are fitting, 100% of the time #####
+
+nulls <- map(kfm, ~ map_lgl(.x, ~ is.null(.x)))
+keeps <- map(kfm, ~ map_lgl(.x, ~ !is.null(.x)))
+
+kfm <- map2(kfm, keeps, ~ keep(.x, .y))
+testing_events <- map2(testing_events, keeps, ~ keep(.x, .y))
+
+##### This workflow runs with the flattened version #####
+
 kfm <- flatten(kfm)
 testing_events <- flatten(testing_events)
 
 
-##### ----- #####
-
-# I don't think we're going to worry about this:
-
-
-# Occasionally, models fail to fit.
-# These functions help us figure out which are the holdout events for the models.
-# name_of_holdout <- function(event) unique(event$name)
-# name_of_holdout_for_model <- function(model) {
-#   hn <- map(testing_events, name_of_holdout) %>% unique()
-#   unique(hn[!hn %in% model$gbm.call$dataframe$name])
-# }
-
-# # Get a flat list of all holdout names from the testing events.
-# holdout_names <- map(testing_events, name_of_holdout)
-# model_names <- map(kfm, name_of_holdout_for_model)
-
-# i <- unique(holdout_names)
-
-##### ----- #####
 
 # The loop will go here.
 predictions <- foreach(i = 1:length(kfm), .combine = "rbind") %do% {

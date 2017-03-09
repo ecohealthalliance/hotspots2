@@ -42,7 +42,7 @@ fit_brts_to_events <- function(events, brt_params, predictor_names, null_behavio
     brts <- brts[!sapply(brts, is.null)]
   } else if (null_behavior == "rerun") {
     reruns <- 0
-    max_reruns <- 100
+    max_reruns <- 200
     while(any(sapply(brts, is.null)) == TRUE & reruns < max_reruns) {
       nulls <- which(sapply(brts, is.null))
       cat(paste0("Rerunning following models (try ", reruns + 1, " of ", max_reruns, "): "))
