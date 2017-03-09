@@ -49,32 +49,33 @@ keeps <- map(kfm, ~ map_lgl(.x, ~ !is.null(.x)))
 kfm <- map2(kfm, keeps, ~ keep(.x, .y))
 testing_events <- map2(testing_events, keeps, ~ keep(.x, .y))
 
+
+##### This workflow runs with the flattened version #####
+
+kfm <- flatten(kfm)
+testing_events <- flatten(testing_events)
+
+
 ##### The actual meat of the evaluation #####
-predictions <- foreach(i = 1:length(kfm)) %do% {
-  iter_models <- kfm[[i]]
-  iter_events <- testing_events[[i]]
-  iter_predictions <- foreach(i = 1:length(iter_models), .combine = "rbind") %do% {
-    print(paste0("Working on ", i, "..."))
-    events_to_test <- as.data.frame(iter_events[[i]])
-    model_to_test <- iter_models[[i]]
+predictions <- foreach(i = 1:length(kfm), .combine = "rbind") %do% {
+  print(paste0("Working on ", i, "..."))
+  events_to_test <- as.data.frame(testing_events[[i]])
+  model_to_test <- kfm[[i]]
 
-    print("Running predictions...")
-    holdout_reference <- events_to_test$presence
-    holdout_prediction <- predict(model_to_test, events_to_test, n.trees = model_to_test$n.trees)
+  print("Running predictions...")
+  holdout_reference <- events_to_test$presence
+  holdout_prediction <- predict(model_to_test, events_to_test, n.trees = model_to_test$n.trees, type = "response")
 
-    predictions <- data.frame(reference = holdout_reference, prediction = holdout_prediction)
-  }
+  predictions <- data.frame(reference = holdout_reference, prediction = holdout_prediction)
 }
 
 # Either use dismo evaluate or caret confusionMatrix
-e_fixed <- predictions %>%
-  map(~ dismo::evaluate(p = .x[as.logical(.x$reference), "prediction"],
-                        a = .x[!.x$reference, "prediction"],
-                        tr = 0.5))
-e_free <- predictions %>%
-  map(~ dismo::evaluate(p = .x[as.logical(.x$reference), "prediction"],
-                        a = .x[!.x$reference, "prediction"]))
+e_fixed <- dismo::evaluate(p = predictions[as.logical(predictions$reference), "prediction"],
+                           a = predictions[!predictions$reference, "prediction"],
+                           tr = 0.5)
 
+e_free <- dismo::evaluate(p = predictions[as.logical(predictions$reference), "prediction"],
+                          a = predictions[!predictions$reference, "prediction"])
 
 tss <- function(e) {
   tss <- e@TPR + e@TNR - 1
@@ -85,22 +86,12 @@ auc <- function(e) {
   return(auc)
 }
 
-kfm_auc <- e_fixed %>% map_dbl(auc)
-kfm_tss <- e_fixed %>% map_dbl(tss)
-
-
 # Output interactions and summary to text file
-sink(file.path(current_out_dir, "cv_summary_unflattened"))
-cat("AUC (vector, mean, sd, quantiles)\n")
-kfm_auc
-mean(kfm_auc)
-sd(kfm_auc)
-quantile(kfm_auc, probs = c(0.05, 0.25, 0.5, 0.75, 0.95))
-cat("\nTSS(vector, mean, sd, quantiles)\n")
-kfm_tss
-mean(kfm_tss)
-sd(kfm_tss)
-quantile(kfm_tss, probs = c(0.05, 0.25, 0.5, 0.75, 0.95))
+sink(file.path(current_out_dir, "cv_summary_flattened"))
+cat("AUC\n")
+auc(e_fixed)
+cat("\nTSS\n")
+tss(e_fixed)
 sink()
 
 # qplot(factor(reference), prediction, data = predictions, geom = "boxplot")

@@ -13,10 +13,10 @@ data(eid_metadata)
 data(event_coverage)
 
 # Set our directory name and the number of sample iterations we want to conduct.
-model_name <- "kfold_10x100_iter"
+model_name <- "kfold_noweight_10x100_iter"
 k <- 10
 sample_iter <- 100 # Here, sample_iter controls how many times folding we fold
-weighting_varname <- "pubs_fit"
+weighting_varname <- "land_area"
 bootstrap <- FALSE
 brt_params <- list(tree.complexity = 3,
                    learning.rate = 0.0035,

@@ -13,10 +13,10 @@ data(eid_metadata)
 data(event_coverage)
 
 # Set our directory name and the number of sample iterations we want to conduct.
-model_name <- "kfold_10x100_iter"
+model_name <- "kfold_noweight_10x100_iter"
 k <- 10
 sample_iter <- 100 # Here, sample_iter controls how many times folding we fold
-weighting_varname <- "pubs_fit"
+weighting_varname <- "land_area"
 bootstrap <- FALSE
 brt_params <- list(tree.complexity = 3,
                    learning.rate = 0.0035,
@@ -49,14 +49,14 @@ keeps <- map(kfm, ~ map_lgl(.x, ~ !is.null(.x)))
 kfm <- map2(kfm, keeps, ~ keep(.x, .y))
 testing_events <- map2(testing_events, keeps, ~ keep(.x, .y))
 
+
 ##### This workflow runs with the flattened version #####
 
 kfm <- flatten(kfm)
 testing_events <- flatten(testing_events)
 
 
-
-# The loop will go here.
+##### The actual meat of the evaluation #####
 predictions <- foreach(i = 1:length(kfm), .combine = "rbind") %do% {
   print(paste0("Working on ", i, "..."))
   events_to_test <- as.data.frame(testing_events[[i]])
@@ -77,24 +77,32 @@ e_fixed <- dismo::evaluate(p = predictions[as.logical(predictions$reference), "p
 e_free <- dismo::evaluate(p = predictions[as.logical(predictions$reference), "prediction"],
                           a = predictions[!predictions$reference, "prediction"])
 
-plot(e_free, "ROC")
-plot(e_free, "TPR")
-
 tss <- function(e) {
   tss <- e@TPR + e@TNR - 1
   return(unname(tss))
 }
+auc <- function(e) {
+  auc <- e@auc
+  return(auc)
+}
 
-tss(e_free)
+# Output interactions and summary to text file
+sink(file.path(current_out_dir, "cv_summary_flattened"))
+cat("AUC\n")
+auc(e_fixed)
+cat("\nTSS\n")
 tss(e_fixed)
+sink()
 
-e_free@auc
-e_fixed@auc
-
-qplot(factor(reference), prediction, data = predictions, geom = "boxplot")
-qplot(e_free@t, tss(e_free))
-
-boxplot(e_fixed)
-boxplot(e_free)
-density(e_fixed)
-density(e_free)
+# qplot(factor(reference), prediction, data = predictions, geom = "boxplot")
+# qplot(e_free@t, tss(e_free))
+#
+# boxplot(e_fixed)
+# boxplot(e_free)
+# density(e_fixed)
+# density(e_free)
+#
+#
+# plot(e_free, "ROC")
+# plot(e_free, "TPR")
+#
