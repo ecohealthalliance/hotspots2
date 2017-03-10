@@ -61,20 +61,25 @@ predictions <- foreach(i = 1:length(kfm)) %do% {
 
     print("Running predictions...")
     holdout_reference <- events_to_test$presence
-    holdout_prediction <- predict(model_to_test, events_to_test, n.trees = model_to_test$n.trees)
+    holdout_prediction <- predict(model_to_test, events_to_test, n.trees = model_to_test$n.trees, type = "response")
 
     predictions <- data.frame(reference = holdout_reference, prediction = holdout_prediction)
   }
 }
 
 # Either use dismo evaluate or caret confusionMatrix
+e_all <- predictions %>%
+  map(~ dismo::evaluate(p = .x[as.logical(.x$reference), "prediction"],
+                        a = .x[!.x$reference, "prediction"]))
 e_fixed <- predictions %>%
   map(~ dismo::evaluate(p = .x[as.logical(.x$reference), "prediction"],
                         a = .x[!.x$reference, "prediction"],
                         tr = 0.5))
-e_free <- predictions %>%
-  map(~ dismo::evaluate(p = .x[as.logical(.x$reference), "prediction"],
-                        a = .x[!.x$reference, "prediction"]))
+
+e_free <- map2(predictions,
+               e_all, ~ dismo::evaluate(p = .x[as.logical(.x$reference), "prediction"],
+                                        a = .x[!.x$reference, "prediction"],
+                                        tr = threshold(.y)$kappa))
 
 
 tss <- function(e) {
@@ -86,33 +91,49 @@ auc <- function(e) {
   return(auc)
 }
 
-kfm_auc <- e_fixed %>% map_dbl(auc)
-kfm_tss <- e_fixed %>% map_dbl(tss)
+kfm_auc_free <- e_free %>% map_dbl(auc)
+kfm_tss_free <- e_free %>% map_dbl(tss)
+
+kfm_auc_fixed <- e_fixed %>% map_dbl(auc)
+kfm_tss_fixed <- e_fixed %>% map_dbl(tss)
 
 
 # Output interactions and summary to text file
 sink(file.path(current_out_dir, "cv_summary_unflattened"))
-cat("AUC (vector, mean, sd, quantiles)\n")
-kfm_auc
-mean(kfm_auc)
-sd(kfm_auc)
-quantile(kfm_auc, probs = c(0.05, 0.25, 0.5, 0.75, 0.95))
-cat("\nTSS(vector, mean, sd, quantiles)\n")
-kfm_tss
-mean(kfm_tss)
-sd(kfm_tss)
-quantile(kfm_tss, probs = c(0.05, 0.25, 0.5, 0.75, 0.95))
+cat(paste0("Model Name: ", model_name, "\n"))
+cat("\n\n# Setting threshold at 0.5\n")
+cat("\nAUC (vector, mean, sd, quantiles)\n")
+kfm_auc_fixed
+mean(kfm_auc_fixed)
+sd(kfm_auc_fixed)
+quantile(kfm_auc_fixed, probs = c(0.05, 0.25, 0.5, 0.75, 0.95))
+cat("\nTSS (vector, mean, sd, quantiles)\n")
+kfm_tss_fixed
+mean(kfm_tss_fixed)
+sd(kfm_tss_fixed)
+quantile(kfm_tss_fixed, probs = c(0.05, 0.25, 0.5, 0.75, 0.95))
+cat("\n\n# Allowing threshold to vary per CV set\n")
+cat("\nAUC (vector, mean, sd, quantiles)\n")
+kfm_auc_free
+mean(kfm_auc_free)
+sd(kfm_auc_free)
+quantile(kfm_auc_free, probs = c(0.05, 0.25, 0.5, 0.75, 0.95))
+cat("\nTSS (vector, mean, sd, quantiles)\n")
+kfm_tss_free
+mean(kfm_tss_free)
+sd(kfm_tss_free)
+quantile(kfm_tss_free, probs = c(0.05, 0.25, 0.5, 0.75, 0.95))
 sink()
 
 # qplot(factor(reference), prediction, data = predictions, geom = "boxplot")
-# qplot(e_free@t, tss(e_free))
+# qplot(e_all@t, tss(e_all))
 #
-# boxplot(e_fixed)
 # boxplot(e_free)
-# density(e_fixed)
+# boxplot(e_all)
 # density(e_free)
+# density(e_all)
 #
 #
-# plot(e_free, "ROC")
-# plot(e_free, "TPR")
+# plot(e_all, "ROC")
+# plot(e_all, "TPR")
 #
