@@ -60,8 +60,11 @@ pubs_weight <- drivers_full %>%
 pubs_weight[is.na(pubs_weight)] <- 0
 
 
+
+
+
 ##### The actual meat of the evaluation #####
-predictions <- foreach(i = 1:length(kfm)) %do% {
+predictions <- foreach(i = 1:length(kfm)) %dopar% {
   print(paste0("Working on ", i, "..."))
   iter_models <- kfm[[i]]
   iter_events <- testing_events[[i]]
@@ -78,49 +81,71 @@ predictions <- foreach(i = 1:length(kfm)) %do% {
       cbind(response) %>%
       left_join(pubs_weight, by = "gridid") %>% # The "by" is there to shut the function up.
       mutate(prediction = response * pubs_weight,
-             prediction2 = response * pubs_weight * 0.5 / mean(response * pubs_weight, na.rm = TRUE)) %>%
+             prediction2 = prediction * 0.5 / median(prediction)) %>% 
       select(reference, response, pubs_weight, prediction, prediction2)
     predictions
   }
 }
 
-##### The variable named 'prediction' is the weighted response. #####
+##### The variable`prediction` is the weighted response. `prediction2` is a
+##### way of a priori getting a proper TSS score at a reasonable threshold. We
+##### know our prevalence is fixed at 0.5, so we set the median value of the
+##### prediction to be 0.5, meaning that half of its predictions will be above
+##### and half will be below that. In other words, it's not guessing
+##### *absolutely*, it's guessing relatively.
 
 # Either use dismo evaluate or caret confusionMatrix
-e_free <- predictions %>%
+e_all <- predictions %>%
   map(~ dismo::evaluate(p = .x[as.logical(.x$reference), "prediction"],
                         a = .x[!.x$reference, "prediction"]))
+e_fixed <- predictions %>%
+  map(~ dismo::evaluate(p = .x[as.logical(.x$reference), "prediction2"],
+                        a = .x[!.x$reference, "prediction2"],
+                        tr = 0.5))
+e_free <- map2(predictions,
+               e_all, ~ dismo::evaluate(p = .x[as.logical(.x$reference), "prediction"],
+                                        a = .x[!.x$reference, "prediction"],
+                                        tr = threshold(.y)$kappa))
 
-# We will set here the treshold to that which maximizes kappa.
-e_fixed <- map2(predictions, e_free, ~ dismo::evaluate(p = .x[as.logical(.x$reference), "prediction"],
-                                                       a = .x[!.x$reference, "prediction"],
-                                                       tr = threshold(.y)$kappa))
+map(e_all, ~ threshold(.x)$kappa) %>% simplify() %>% mean()
 
-tss <- function(e) {
-  tss <- e@TPR + e@TNR - 1
-  return(unname(tss))
-}
+
+
+
 auc <- function(e) {
   auc <- e@auc
   return(auc)
 }
+tss <- function(e) {
+  tss <- e@TPR + e@TNR - 1
+  return(unname(tss))
+}
 
-kfm_auc <- e_fixed %>% map_dbl(auc)
-kfm_tss <- e_fixed %>% map_dbl(tss)
+kfm_auc <- e_all %>% map_dbl(auc)
+kfm_tss_free <- e_free %>% map_dbl(tss)
+kfm_tss_fixed <- e_fixed %>% map_dbl(tss)
+
 
 
 # Output interactions and summary to text file
 sink(file.path(current_out_dir, "cv_with_noweight_summary_unflattened"))
-cat("AUC (vector, mean, sd, quantiles)\n")
+cat(paste0("Model Name: ", model_name, "\n"))
+cat("\n\nAUC, which is threshold-free (vector, mean, sd, quantiles)\n")
 kfm_auc
 mean(kfm_auc)
 sd(kfm_auc)
 quantile(kfm_auc, probs = c(0.05, 0.25, 0.5, 0.75, 0.95))
-cat("\nTSS(vector, mean, sd, quantiles)\n")
-kfm_tss
-mean(kfm_tss)
-sd(kfm_tss)
-quantile(kfm_tss, probs = c(0.05, 0.25, 0.5, 0.75, 0.95))
+cat("\n\nTSS, threshold-dependent (vector, mean, sd, quantiles)\n")
+cat("\n# Scaling median to 0.5\n")
+kfm_tss_fixed
+mean(kfm_tss_fixed)
+sd(kfm_tss_fixed)
+quantile(kfm_tss_fixed, probs = c(0.05, 0.25, 0.5, 0.75, 0.95))
+cat("\n# Allowing threshold to vary per CV set\n")
+kfm_tss_free
+mean(kfm_tss_free)
+sd(kfm_tss_free)
+quantile(kfm_tss_free, probs = c(0.05, 0.25, 0.5, 0.75, 0.95))
 sink()
 
 # qplot(factor(reference), prediction, data = predictions, geom = "boxplot")
