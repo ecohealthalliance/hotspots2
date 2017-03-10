@@ -91,34 +91,27 @@ auc <- function(e) {
   return(auc)
 }
 
-kfm_auc_free <- e_free %>% map_dbl(auc)
-kfm_tss_free <- e_free %>% map_dbl(tss)
 
-kfm_auc_fixed <- e_fixed %>% map_dbl(auc)
+kfm_auc <- e_all %>% map_dbl(auc)
+kfm_tss_free <- e_free %>% map_dbl(tss)
 kfm_tss_fixed <- e_fixed %>% map_dbl(tss)
 
 
 # Output interactions and summary to text file
 sink(file.path(current_out_dir, "cv_summary_unflattened"))
 cat(paste0("Model Name: ", model_name, "\n"))
-cat("\n\n# Setting threshold at 0.5\n")
-cat("\nAUC (vector, mean, sd, quantiles)\n")
-kfm_auc_fixed
-mean(kfm_auc_fixed)
-sd(kfm_auc_fixed)
-quantile(kfm_auc_fixed, probs = c(0.05, 0.25, 0.5, 0.75, 0.95))
-cat("\nTSS (vector, mean, sd, quantiles)\n")
+cat("\n\nAUC, which is threshold-free (vector, mean, sd, quantiles)\n")
+kfm_auc
+mean(kfm_auc)
+sd(kfm_auc)
+quantile(kfm_auc, probs = c(0.05, 0.25, 0.5, 0.75, 0.95))
+cat("\n\nTSS, threshold-dependent (vector, mean, sd, quantiles)\n")
+cat("\n# Setting threshold to 0.5\n")
 kfm_tss_fixed
 mean(kfm_tss_fixed)
 sd(kfm_tss_fixed)
 quantile(kfm_tss_fixed, probs = c(0.05, 0.25, 0.5, 0.75, 0.95))
-cat("\n\n# Allowing threshold to vary per CV set\n")
-cat("\nAUC (vector, mean, sd, quantiles)\n")
-kfm_auc_free
-mean(kfm_auc_free)
-sd(kfm_auc_free)
-quantile(kfm_auc_free, probs = c(0.05, 0.25, 0.5, 0.75, 0.95))
-cat("\nTSS (vector, mean, sd, quantiles)\n")
+cat("\n# Allowing threshold to vary per CV set\n")
 kfm_tss_free
 mean(kfm_tss_free)
 sd(kfm_tss_free)
