@@ -65,6 +65,8 @@ quickmap(drivers_full, pop) +
 # Nice maps!
 # This whole workflow does a nice plot of a variable.
 
+##### Can just come here to load predictions.RData #####
+
 clip_at_sd <- function(x, multiple = 1) {
   m <- mean(x, na.rm = TRUE)
   s <- sd(x, na.rm = TRUE) * multiple
@@ -141,7 +143,8 @@ ggsave(file.path(current_out_dir, "map_bsm_weight_pop.png"), height = 4.25, widt
 
 
 
-# Output for bsm_weight_pop
+# Output for map_bsm_response
+# Version with no labels
 pretty <- predictions %>%
   select(x = lon, y = lat, z = bsm_response) %>%
   rasterFromXYZ(crs = crs(template_raster())) %>%
@@ -157,6 +160,7 @@ ggplot() +
   geom_raster(aes(x = x, y = y, fill = clip_at_sd(z, 2)), data = pretty) +
   geom_path(aes(x = lon, y = lat, group = group), data = map.world(), inherit.aes = FALSE, color = "white", size = 0.15) +
   coord_fixed() +
+  ylim(-65, 90) +
   scale_fill_gradientn(colours = viridis(numcolors),
                        guide = guide_colorbar()) +
   theme_black_legend() +
@@ -172,6 +176,35 @@ ggsave(file.path(current_out_dir, "map_bsm_response.png"), height = 4.25, width 
 
 
 
+# Output for map_bsm_response
+##### Version with labels #####
+pretty <- predictions %>%
+  select(x = lon, y = lat, z = bsm_response) %>%
+  rasterFromXYZ(crs = crs(template_raster())) %>%
+  raster::disaggregate(2, method = "bilinear") %>%
+  mask(mask = country_outlines) %>%
+  as.data.frame(xy = TRUE) %>%
+  na.omit()
 
+numcolors <- length(unique(pretty[["z"]]))
 
+ggplot() +
+  geom_polygon(aes(x = lon, y = lat, group = group), data = map.world(), inherit.aes = FALSE, fill = viridis(1)) +
+  geom_raster(aes(x = x, y = y, fill = clip_at_sd(z, 2)), data = pretty) +
+  geom_path(aes(x = lon, y = lat, group = group), data = map.world(), inherit.aes = FALSE, color = "white", size = 0.15) +
+  coord_fixed() +
+  ylim(-65, 90) +
+  scale_fill_gradientn(colours = viridis(numcolors),
+                       guide = guide_colorbar(label = TRUE,
+                                              label.position = "right",
+                                              title = "Event probability\n(relative to\nreporting effort)")) +
+  theme_black_legend() +
+  theme(legend.title = element_text(color = "white", size = 8),
+        legend.text = element_text(color = "white", size = 8),
+        legend.title.align = 0,
+        legend.background = element_blank(),
+        legend.position = c(0.11, 0.45)) +
+  labs(x = NULL, y = NULL)
 
+ggsave(file.path(current_out_dir, "map_bsm_response_labeled.pdf"), height = 4.25, width = 9)
+ggsave(file.path(current_out_dir, "map_bsm_response_labeled.png"), height = 4.25, width = 9)

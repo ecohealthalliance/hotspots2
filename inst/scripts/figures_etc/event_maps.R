@@ -32,19 +32,19 @@ make_weight <- function(df, weighting_varname) {
     replace_na(replace = list(weight = 0, weighting_var = 0)) %>%
     group_by(gridid, lon, lat) %>%
     summarize(weight = sum(weight)) %>%
-    ungroup()  
+    ungroup()
 }
 
 # # Define a function to upscale to raster
-# prettyquick <- function(data, fill, method = "") {
-#   data %>%
-#     select_(x = "lon", y = "lat", z = fill) %>%
-#     rasterFromXYZ(crs = crs(template_raster())) %>%
-#     disaggregate(4, method = method) %>%
-#     mask(mask = country_outlines) %>%
-#     as.data.frame(xy = TRUE) %>%
-#     na.omit()
-# }
+prettyquick <- function(data, fill, method = "") {
+  data %>%
+    select_(x = "lon", y = "lat", z = fill) %>%
+    rasterFromXYZ(crs = crs(template_raster())) %>%
+    raster::disaggregate(4, method = method) %>%
+    mask(mask = country_outlines) %>%
+    as.data.frame(xy = TRUE) %>%
+    na.omit()
+}
 
 
 wz <- eid_metadata %>%
@@ -80,25 +80,46 @@ wzpst70_upsc <- wzpst70 %>%
 
 
 # Plot and save them all
-quickmap(wz_upsc, z, pal_fun = "inferno") +
+quickmap(wz_upsc, z, pal_fun = "viridis", fill_name = "Probable events\nper grid cell") +
   geom_path(aes(x = lon, y = lat, group = group), data = map.world, inherit.aes = FALSE,
             color = "white", size = 0.1) +
-  theme_black_nothing()
+  theme_black_legend() +
+  theme(legend.title = element_text(color = "white", size = 11),
+        legend.text = element_text(color = "white", size = 11),
+        legend.title.align = 0,
+        legend.background = element_blank(),
+        legend.position = c(0.11, 0.45)) +
+  labs(x = NULL, y = NULL, title = NULL) +
+  ylim(-65, 90)
 # ggsave(file.path(current_out_dir, "wildlife_zoonoses_unweighted.png"), height = 4.5, width = 9)
 ggsave(file.path(current_out_dir, "wildlife_zoonoses_unweighted.pdf"), height = 4.5, width = 9)
 
 
-quickmap(wzpre70_upsc, z, pal_fun = "inferno") +
+quickmap(wzpre70_upsc, z, pal_fun = "viridis", fill_name = "Probable events\nper grid cell") +
   geom_path(aes(x = lon, y = lat, group = group), data = map.world, inherit.aes = FALSE,
             color = "white", size = 0.1) +
-  theme_black_nothing()
+  theme_black_legend() +
+  theme(legend.title = element_text(color = "white", size = 11),
+        legend.text = element_text(color = "white", size = 11),
+        legend.title.align = 0,
+        legend.background = element_blank(),
+        legend.position = c(0.11, 0.45)) +
+  labs(x = NULL, y = NULL, title = NULL) +
+  ylim(-65, 90)
 # ggsave(file.path(current_out_dir, "wildlife_zoonoses_pre-70_unweighted.png"), height = 4.5, width = 9)
 ggsave(file.path(current_out_dir, "wildlife_zoonoses_pre-70_unweighted.pdf"), height = 4.5, width = 9)
 
-quickmap(wzpst70_upsc, z, pal_fun = "inferno") +
+quickmap(wzpst70_upsc, z, pal_fun = "viridis", fill_name = "Probable events\nper grid cell") +
   geom_path(aes(x = lon, y = lat, group = group), data = map.world, inherit.aes = FALSE,
             color = "white", size = 0.1) +
-  theme_black_nothing()
+  theme_black_legend() +
+  theme(legend.title = element_text(color = "white", size = 11),
+        legend.text = element_text(color = "white", size = 11),
+        legend.title.align = 0,
+        legend.background = element_blank(),
+        legend.position = c(0.11, 0.45)) +
+  labs(x = NULL, y = NULL, title = NULL) +
+  ylim(-65, 90)
 # ggsave(file.path(current_out_dir, "wildlife_zoonoses_post-70_unweighted.png"), height = 4.5, width = 9)
 ggsave(file.path(current_out_dir, "wildlife_zoonoses_post-70_unweighted.pdf"), height = 4.5, width = 9)
 
@@ -106,25 +127,46 @@ ggsave(file.path(current_out_dir, "wildlife_zoonoses_post-70_unweighted.pdf"), h
 
 
 # Save log-transformed versions so that we can better see what this looks like.
-quickmap(wz_upsc, log(z), pal_fun = "inferno") +
+quickmap(wz_upsc, z, trans_log = TRUE, pal_fun = "viridis", fill_name = "Probable events\nper grid cell") +
   geom_path(aes(x = lon, y = lat, group = group), data = map.world, inherit.aes = FALSE,
             color = "white", size = 0.1) +
-  theme_black_nothing()
+  theme_black_legend() +
+  theme(legend.title = element_text(color = "white", size = 11),
+        legend.text = element_text(color = "white", size = 11),
+        legend.title.align = 0,
+        legend.background = element_blank(),
+        legend.position = c(0.11, 0.45)) +
+  labs(x = NULL, y = NULL, title = NULL) +
+  ylim(-65, 90)
 # ggsave(file.path(current_out_dir, "wildlife_zoonoses_unweighted_log.png"), height = 4.5, width = 9)
 ggsave(file.path(current_out_dir, "wildlife_zoonoses_unweighted_log.pdf"), height = 4.5, width = 9)
 
 
-quickmap(wzpre70_upsc, log(z), pal_fun = "inferno") +
+quickmap(wzpre70_upsc, z, trans_log = TRUE, pal_fun = "viridis", fill_name = "Probable events\nper grid cell") +
   geom_path(aes(x = lon, y = lat, group = group), data = map.world, inherit.aes = FALSE,
             color = "white", size = 0.1) +
-  theme_black_nothing()
+  theme_black_legend() +
+  theme(legend.title = element_text(color = "white", size = 11),
+        legend.text = element_text(color = "white", size = 11),
+        legend.title.align = 0,
+        legend.background = element_blank(),
+        legend.position = c(0.11, 0.45)) +
+  labs(x = NULL, y = NULL, title = NULL) +
+  ylim(-65, 90)
 # ggsave(file.path(current_out_dir, "wildlife_zoonoses_pre-70_unweighted_log.png"), height = 4.5, width = 9)
 ggsave(file.path(current_out_dir, "wildlife_zoonoses_pre-70_unweighted_log.pdf"), height = 4.5, width = 9)
 
-quickmap(wzpst70_upsc, log(z), pal_fun = "inferno") +
+quickmap(wzpst70_upsc, z, trans_log = TRUE, pal_fun = "viridis", fill_name = "Probable events\nper grid cell") +
   geom_path(aes(x = lon, y = lat, group = group), data = map.world, inherit.aes = FALSE,
             color = "white", size = 0.1) +
-  theme_black_nothing()
+  theme_black_legend() +
+  theme(legend.title = element_text(color = "white", size = 11),
+        legend.text = element_text(color = "white", size = 11),
+        legend.title.align = 0,
+        legend.background = element_blank(),
+        legend.position = c(0.11, 0.45)) +
+  labs(x = NULL, y = NULL, title = NULL) +
+  ylim(-65, 90)
 # ggsave(file.path(current_out_dir, "wildlife_zoonoses_post-70_unweighted_log.png"), height = 4.5, width = 9)
 ggsave(file.path(current_out_dir, "wildlife_zoonoses_post-70_unweighted_log.pdf"), height = 4.5, width = 9)
 
@@ -148,17 +190,31 @@ w8_pubs_fit_pres <- wz %>%
   make_weight("pubs_fit") %>%
   prettyquick("weight", method = "")
 
-quickmap(w8_land_area_pres, log(z), pal_fun = "magma") +
+quickmap(w8_land_area_pres, z, trans_log = TRUE, pal_fun = "viridis", fill_name = "Probable events\nweighted by\nland area") +
   geom_path(aes(x = lon, y = lat, group = group), data = map.world, inherit.aes = FALSE,
             color = "white", size = 0.1) +
-  theme_black_nothing()
+  theme_black_legend() +
+  theme(legend.title = element_text(color = "white", size = 8),
+        legend.text = element_text(color = "white", size = 8),
+        legend.title.align = 0,
+        legend.background = element_blank(),
+        legend.position = c(0.11, 0.45)) +
+  labs(x = NULL, y = NULL, title = NULL) +
+  ylim(-65, 90)
 # ggsave(file.path(current_out_dir, "wildlife_zoonoses_unweighted_log.png"), height = 4.5, width = 9)
 ggsave(file.path(current_out_dir, "weighted_land_area_presences.pdf"), height = 4.5, width = 9)
 
-quickmap(w8_pubs_fit_pres, log(z), pal_fun = "magma") +
+quickmap(w8_pubs_fit_pres, z, trans_log = TRUE, pal_fun = "viridis", fill_name = "Probable events\nweighted by\nreporting effort") +
   geom_path(aes(x = lon, y = lat, group = group), data = map.world, inherit.aes = FALSE,
             color = "white", size = 0.1) +
-  theme_black_nothing()
+  theme_black_legend() +
+  theme(legend.title = element_text(color = "white", size = 8),
+        legend.text = element_text(color = "white", size = 8),
+        legend.title.align = 0,
+        legend.background = element_blank(),
+        legend.position = c(0.11, 0.45)) +
+  labs(x = NULL, y = NULL, title = NULL) +
+  ylim(-65, 90)
 # ggsave(file.path(current_out_dir, "wildlife_zoonoses_unweighted_log.png"), height = 4.5, width = 9)
 ggsave(file.path(current_out_dir, "weighted_pubs_fit_presences.pdf"), height = 4.5, width = 9)
 
@@ -169,16 +225,30 @@ w8_land_area_abs <- drivers %>%
 w8_pubs_fit_abs <- drivers %>%
   prettyquick("pubs_fit", method = "")
 
-quickmap(w8_land_area_abs, log(z), pal_fun = "magma") +
+quickmap(w8_land_area_abs, z, trans_log = TRUE, pal_fun = "viridis", fill_name = "Absence probability\nweighted by\nland area") +
   geom_path(aes(x = lon, y = lat, group = group), data = map.world, inherit.aes = FALSE,
             color = "white", size = 0.1) +
-  theme_black_nothing()
+  theme_black_legend() +
+  theme(legend.title = element_text(color = "white", size = 8),
+        legend.text = element_text(color = "white", size = 8),
+        legend.title.align = 0,
+        legend.background = element_blank(),
+        legend.position = c(0.11, 0.45)) +
+  labs(x = NULL, y = NULL, title = NULL) +
+  ylim(-65, 90)
 # ggsave(file.path(current_out_dir, "wildlife_zoonoses_unweighted_log.png"), height = 4.5, width = 9)
 ggsave(file.path(current_out_dir, "weighted_land_area_absences.pdf"), height = 4.5, width = 9)
 
-quickmap(w8_pubs_fit_abs, log(z), pal_fun = "magma") +
+quickmap(w8_pubs_fit_abs, z, trans_log = TRUE, pal_fun = "viridis", fill_name = "Absence probability\nweighted by\nreporting effort") +
   geom_path(aes(x = lon, y = lat, group = group), data = map.world, inherit.aes = FALSE,
             color = "white", size = 0.1) +
-  theme_black_nothing()
+  theme_black_legend() +
+  theme(legend.title = element_text(color = "white", size = 8),
+        legend.text = element_text(color = "white", size = 8),
+        legend.title.align = 0,
+        legend.background = element_blank(),
+        legend.position = c(0.11, 0.45)) +
+  labs(x = NULL, y = NULL, title = NULL) +
+  ylim(-65, 90)
 # ggsave(file.path(current_out_dir, "wildlife_zoonoses_unweighted_log.png"), height = 4.5, width = 9)
 ggsave(file.path(current_out_dir, "weighted_pubs_fit_absences.pdf"), height = 4.5, width = 9)

@@ -1,6 +1,6 @@
 # Functions related to plotting.
 
-quickmap <- function(data, fill, geom = "raster", limits = NULL, plot_factor = FALSE, pal_fun = "viridis", ...) {
+quickmap <- function(data, fill, geom = "raster", limits = NULL, plot_factor = FALSE, trans_log = FALSE, pal_fun = "viridis", fill_name = NULL, ...) {
   require(ggplot2)
   require(RColorBrewer)
   require(viridis)
@@ -30,6 +30,8 @@ quickmap <- function(data, fill, geom = "raster", limits = NULL, plot_factor = F
 
   arglist$geom <- geom
   arglist$pal_fun <- NULL
+  arglist$fill_name <- NULL
+  arglist$trans_log <- NULL
 
   qplot_call <- as.call(arglist)
 
@@ -46,8 +48,10 @@ quickmap <- function(data, fill, geom = "raster", limits = NULL, plot_factor = F
 
   if (plot_factor == TRUE) {
     quickmap <- eval(qplot_call) + coord_fixed() + ggtitle(title)
+  } else if(trans_log == TRUE) {
+    quickmap <- eval(qplot_call) + coord_fixed() + scale_fill_gradientn(colours = pal, limits = limits, trans = "log", name = fill_name, labels = function(x) format(x, digits = 3)) + ggtitle(title)
   } else {
-    quickmap <- eval(qplot_call) + coord_fixed() + scale_fill_gradientn(colours = pal, limits = limits) + ggtitle(title)
+    quickmap <- eval(qplot_call) + coord_fixed() + scale_fill_gradientn(colours = pal, limits = limits, name = fill_name) + ggtitle(title)
   }
 
   return(quickmap)
@@ -189,7 +193,7 @@ theme_black_legend <- function(base_size = 10, base_family = "Helvetica") {
       axis.text = element_blank(),
       panel.background = element_rect(fill = "black", color  =  NA),
       legend.position = "right",
-      legend.text = element_text(size = 8, color = "black")
+      legend.text = element_text(size = 8, color = "white")
       # axis.ticks = element_text
     )
 }
