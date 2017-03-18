@@ -1,7 +1,6 @@
 percent_deviance_explained <- function(object) {
-  deviances <- laply(bsm, function(x) (x$self.statistics$mean.null - x$self.statistics$mean.resid) / x$self.statistics$mean.null)
-  pde <- data.frame("mean" = mean(deviances), "sd" = sd(deviances))
-  return(pde)
+  deviances <- laply(object, function(x) (x$self.statistics$mean.null - x$self.statistics$mean.resid) / x$self.statistics$mean.null)
+  return(deviances)
 }
 
 

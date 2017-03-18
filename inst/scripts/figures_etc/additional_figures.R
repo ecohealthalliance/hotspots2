@@ -61,6 +61,20 @@ to_examine <- c("pop",
                 "pubs_fit",
                 "gens")
 
+columnLabels <- c("Population",
+                  "Population\nChange",
+                  "Cropland",
+                  "Cultivated/Managed\nVeg.",
+                  "Pasture",
+                  "Herbaceous\nVeg.",
+                  "Evergreen Broadleaf\nTrees",
+                  "Mammal\nBiodiversity",
+                  "Poultry",
+                  "Livestock Mammal\nHeadcount",
+                  "Urban/Built-up",
+                  "Reporting Effort",
+                  "Global Envir.\nStrat.")
+
 drivers_full %>%
   select(one_of(to_examine)) %>%
   ggcorr(label = TRUE)
@@ -71,17 +85,19 @@ drivers_full %>%
   sample_n(500) %>%
   ggpairs(lower = list(continuous = wrap("points",
                                          size = 1.5,
-                                         alpha = 0.25))) +
-  theme_nothing()
+                                         alpha = 0.25)),
+          columnLabels = columnLabels) +
+  theme_nothing() %+replace% theme(text = element_text(size = 10))
 dev.off()
 
-pdf("inst/out/additional_figures/scatterplotmatrix.pdf", height = 15, width = 15)
+pdf("inst/out/additional_figures/scatterplotmatrix.pdf", height = 18, width = 18)
 drivers_full %>%
   select(one_of(to_examine)) %>%
-  sample_n(250) %>%
+  sample_n(500) %>%
   ggpairs(lower = list(continuous = wrap("points",
                                          size = 1.5,
-                                         alpha = 0.5))) +
+                                         alpha = 0.25)),
+          columnLabels = columnLabels) +
   theme_nothing()
 dev.off()
 
@@ -91,7 +107,8 @@ drivers_full %>%
   sample_n(500) %>%
   ggpairs(lower = list(continuous = wrap("points",
                                          size = 1.5,
-                                         alpha = 0.25))) +
+                                         alpha = 0.25)),
+          columnLabels = columnLabels) +
   theme_nothing()
 dev.off()
 
