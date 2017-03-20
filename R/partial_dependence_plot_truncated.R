@@ -191,8 +191,8 @@ partial_dependence_plot_truncated <- function(model, events, model_name) {
     pdq_subset
   }
 
-
   # One-ioff tweak to rescale the x axes where numbers are overlapping.
+  library(forcats)
   pdq_final2 <- pdq_final
   pdq_final2[pdq_final2$name == "Population", "x"] <- pdq_final2[pdq_final2$name == "Population", "x"] / 1000000
   pdq_final2[pdq_final2$name == "Livestock Mammal\nHeadcount", "x"] <- pdq_final2[pdq_final2$name == "Livestock Mammal\nHeadcount", "x"] / 100000
