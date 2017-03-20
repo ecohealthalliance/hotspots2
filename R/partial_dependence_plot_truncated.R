@@ -192,13 +192,26 @@ partial_dependence_plot_truncated <- function(model, events, model_name) {
   }
 
 
+  # One-ioff tweak to rescale the x axes where numbers are overlapping.
+  pdq_final2 <- pdq_final
+  pdq_final2[pdq_final2$name == "Population", "x"] <- pdq_final2[pdq_final2$name == "Population", "x"] / 1000000
+  pdq_final2[pdq_final2$name == "Livestock Mammal\nHeadcount", "x"] <- pdq_final2[pdq_final2$name == "Livestock Mammal\nHeadcount", "x"] / 100000
+  pdq_final2$name <- fct_recode(pdq_final2$name, c("Livestock Mammal\nHeadcount (/100,000)" = "Livestock Mammal\nHeadcount"), c("Population\n(/1,000,000)" = "Population"))
+
+  hist_final2 <- hist_final
+  hist_final2[hist_final2$name == "Population", "x"] <- hist_final2[hist_final2$name == "Population", "x"] / 1000000
+  hist_final2[hist_final2$name == "Livestock Mammal\nHeadcount", "x"] <- hist_final2[hist_final2$name == "Livestock Mammal\nHeadcount", "x"] / 100000
+  hist_final2$name <- fct_recode(hist_final2$name, c("Livestock Mammal\nHeadcount (/100,000)" = "Livestock Mammal\nHeadcount"), c("Population\n(/1,000,000)" = "Population"))
+
+
+
   ggplot(mapping = aes(x = x)) +
     facet_wrap(~ name, scales = "free_x", ncol = 4) +
     ylim(ymin, ymax) + # Fix y axes for rigor :)
-    geom_segment(data = hist_final, mapping = aes(y = ymin, yend = y, xend = x),
+    geom_segment(data = hist_final2, mapping = aes(y = ymin, yend = y, xend = x),
                  color = "#999999") +
-    geom_ribbon(data = pdq_final, mapping = aes(ymin = q05, ymax = q95, fill = Group), alpha = 0.75) +
-    geom_line(data = pdq_final, mapping = aes(y = q50)) +
+    geom_ribbon(data = pdq_final2, mapping = aes(ymin = q05, ymax = q95, fill = Group), alpha = 0.75) +
+    geom_line(data = pdq_final2, mapping = aes(y = q50)) +
     theme_bw(base_size = 11, base_family = "") +
     labs(x = "Value of Predictor",
          y = "EID Event Risk Index (and 90% CI)",
