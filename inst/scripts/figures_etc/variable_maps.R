@@ -75,5 +75,27 @@ ggplot() +
   theme_black_nothing() +
   labs(x = NULL, y = NULL)
 
+
+
+# New attempt with pasted code
+
+ggplot() +
+  geom_polygon(aes(x = lon, y = lat, group = group), data = map.world(), inherit.aes = FALSE, fill = viridis(1)) +
+  geom_raster(aes(x = x, y = y, fill = z), data = pretty_pubcrawler) +
+  geom_path(aes(x = lon, y = lat, group = group), data = map.world(), inherit.aes = FALSE, color = "white", size = 0.15) +
+  coord_fixed() +
+  ylim(-65, 90) +
+  scale_fill_gradientn(colours = viridis(numcolors),
+                       guide = guide_colorbar(label = TRUE,
+                                              label.position = "right",
+                                              title = "Predicted number of publications")) +
+  theme_black_legend() +
+  theme(legend.title = element_text(color = "white", size = 8),
+        legend.text = element_text(color = "white", size = 8),
+        legend.title.align = 0,
+        legend.background = element_blank(),
+        legend.position = c(0.11, 0.45)) +
+  labs(x = NULL, y = NULL)
+
 ggsave(file.path(current_out_dir, "pubs_fit.pdf"), height = 4.5, width = 9)
 ggsave(file.path(current_out_dir, "pubs_fit.png"), height = 4.5, width = 9)

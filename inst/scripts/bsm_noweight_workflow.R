@@ -84,7 +84,7 @@ partial_dependence_plot_truncated(bsm, bsm_events, model_name)
 # quickmap(sum_presences(bsm_events), log(n))
 # quickmap(sum_absences(bsm_events), log(n))
 
-sink(file.path(current_out_dir, "summary_interactions"))
+sink(file.path(current_out_dir, "summary"))
 cat("Summary\n")
 summarize_multibrt(bsm, .parallel = TRUE)
 sink()
@@ -118,3 +118,11 @@ intsum$var2.names <- revalue(intsum$var2.names, replace = names)
 
 write.csv(intsum, file = file.path(current_out_dir, "interactions.csv"), row.names = FALSE)
 
+pde <- percent_deviance_explained(bsm)
+sink(file.path(current_out_dir, "percent_deviance_explained"))
+cat("Percent Deviance Explained\n")
+mean(pde)
+sd(pde)
+pde %>%
+  quantile(c(0.05, 0.25, 0.5, 0.75, 0.95))
+sink()
