@@ -43,13 +43,26 @@ quickmap(predictions, quantvar(bsm_weight_pubs))
 quickmap(predictions, quantvar(bsm_weight_pop))
 
 
-bsm_weight_pubs <- predictions %>%
+# Rescale so they sum to 1 over the study area, then export to raster.
+predictions_resc <- predictions
+
+predictions_resc$bsm_response <- predictions_resc$bsm_response * 1 / sum(predictions_resc$bsm_response, na.rm = TRUE)
+predictions_resc$bsm_weight_pubs <- predictions_resc$bsm_weight_pubs * 1 / sum(predictions_resc$bsm_weight_pubs, na.rm = TRUE)
+predictions_resc$bsm_weight_pop <- predictions_resc$bsm_weight_pop * 1 / sum(predictions_resc$bsm_weight_pop, na.rm = TRUE)
+
+bsm_response <- predictions_resc %>%
+  select(x = lon, y = lat, z = bsm_response) %>%
+  rasterFromXYZ(crs = crs(template_raster()))
+names(bsm_response) <- "bsm_response"
+writeRaster(bsm_response, filename = "inst/out/raster/bsm_response.tif")
+
+bsm_weight_pubs <- predictions_resc %>%
   select(x = lon, y = lat, z = bsm_weight_pubs) %>%
   rasterFromXYZ(crs = crs(template_raster()))
 names(bsm_weight_pubs) <- "bsm_weight_pubs"
 writeRaster(bsm_weight_pubs, filename = "inst/out/raster/bsm_weight_pubs.tif")
 
-bsm_weight_pop <- predictions %>%
+bsm_weight_pop <- predictions_resc %>%
   select(x = lon, y = lat, z = bsm_weight_pop) %>%
   rasterFromXYZ(crs = crs(template_raster()))
 names(bsm_weight_pop) <- "bsm_weight_pop"
@@ -65,7 +78,7 @@ quickmap(drivers_full, pop) +
 # Nice maps!
 # This whole workflow does a nice plot of a variable.
 
-##### Can just come here to load predictions.RData #####
+##### Can just come here run #####
 
 clip_at_sd <- function(x, multiple = 1) {
   m <- mean(x, na.rm = TRUE)
@@ -176,7 +189,7 @@ ggsave(file.path(current_out_dir, "map_bsm_response.png"), height = 4.25, width 
 
 
 
-# Output for map_bsm_response
+# Output for map_bsm_response_labeled
 ##### Version with labels #####
 pretty <- predictions %>%
   select(x = lon, y = lat, z = bsm_response) %>%
@@ -208,3 +221,40 @@ ggplot() +
 
 ggsave(file.path(current_out_dir, "map_bsm_response_labeled.pdf"), height = 4.25, width = 9)
 ggsave(file.path(current_out_dir, "map_bsm_response_labeled.png"), height = 4.25, width = 9)
+
+
+
+
+
+
+# Output for bsm_weight_pop_large
+# Large version for EHA gala
+pretty <- predictions %>%
+  select(x = lon, y = lat, z = bsm_weight_pop) %>%
+  rasterFromXYZ(crs = crs(template_raster())) %>%
+  raster::disaggregate(16, method = "bilinear") %>%
+  mask(mask = country_outlines) %>%
+  as.data.frame(xy = TRUE) %>%
+  na.omit()
+
+numcolors <- length(unique(pretty[["z"]]))
+
+big_map <- ggplot() +
+  geom_polygon(aes(x = lon, y = lat, group = group), data = map.world(), inherit.aes = FALSE, fill = viridis(1)) +
+  geom_raster(aes(x = x, y = y, fill = clip_at_sd(z, 2)), data = pretty) +
+  geom_path(aes(x = lon, y = lat, group = group), data = map.world(), inherit.aes = FALSE, color = "white", size = 0.15) +
+  coord_fixed() +
+  scale_fill_gradientn(colours = viridis(numcolors),
+                       guide = guide_colorbar()) +
+  theme_black_legend() +
+  theme(legend.title = element_blank(),
+        legend.title.align = 0,
+        legend.text = element_blank(),
+        legend.background = element_blank(),
+        legend.position = c(0.975, 0.5)) +
+  labs(x = NULL, y = NULL)
+
+ggsave(file.path(current_out_dir, "map_bsm_weight_pop_large.pdf"), plot = big_map, height = 4.25, width = 9)
+ggsave(file.path(current_out_dir, "map_bsm_weight_pop_large.png"), plot = big_map, height = 4.25, width = 9, dpi = 1600)
+
+
