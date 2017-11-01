@@ -36,7 +36,7 @@ predictions <- select(predictions, gridid, lon, lat,
 
 quickmap(predictions, quantvar(weight_pubs - weight_pop))
 
-quickmap(predictions, log(bsm_weight_pubs))
+
 quickmap(predictions, log(bsm_weight_pop))
 
 quickmap(predictions, quantvar(bsm_weight_pubs))
@@ -67,6 +67,9 @@ bsm_weight_pop <- predictions_resc %>%
   rasterFromXYZ(crs = crs(template_raster()))
 names(bsm_weight_pop) <- "bsm_weight_pop"
 writeRaster(bsm_weight_pop, filename = "inst/out/raster/bsm_weight_pop.tif")
+
+library(readr)
+write_csv(predictions_resc, path = "inst/out/raster/hotspots2_predictions.csv")
 
 # To make this map really work, I should convert to a raster, upscale, and clip.
 quickmap(drivers_full, pop) +
