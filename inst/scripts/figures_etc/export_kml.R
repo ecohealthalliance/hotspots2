@@ -4,7 +4,7 @@ library(dismo)
 library(gbm)
 library(purrr)
 library(viridis)
-# library(plotKML)
+library(plotKML)
 
 data(predictions)
 predictions <- select(predictions, gridid, lon, lat, bsm_weight_pop)
@@ -18,18 +18,32 @@ clip_at_sd <- function(x, multiple = 1) {
   return(y)
 }
 
-predictions$bsm_weight_pop_clipped <- clip_at_sd(predictions$bsm_weight_pop)
+predictions$bsm_weight_pop_clipped <- clip_at_sd(predictions$bsm_weight_pop, 2)
 
-bsm_weight_pop <- predictions %>%
+
+# Using `raster` gives us a version that doesn't work for them.
+hotspots2_clipped <- predictions %>%
   select(x = lon, y = lat, z = bsm_weight_pop_clipped) %>%
   rasterFromXYZ(crs = crs(template_raster()))
-names(bsm_weight_pop) <- "bsm_weight_pop"
+names(hotspots2_clipped) <- "hotspots2_clipped"
+writeRaster(hotspots2_clipped, filename = "inst/out/raster/hotspots2_clipped.tif", overwrite = TRUE)
 
 
 
-KML(bsm_weight_pop,
-    filename = "inst/out/raster/bsm_weight_pop.kml",
-    col = viridis(n_distinct(predictions$bsm_weight_pop_clipped)))
+# High-resolution version.
+hotspots2_clipped_hires <- predictions %>%
+  select(x = lon, y = lat, z = bsm_weight_pop_clipped) %>%
+  rasterFromXYZ(crs = crs(template_raster())) %>%
+  raster::disaggregate(2, method = "bilinear") %>%
+  mask(mask = country_outlines)
+names(hotspots2_clipped_hires) <- "hotspots2_clipped_hires"
+writeRaster(hotspots2_clipped_hires, filename = "inst/out/raster/hotspots2_clipped_hires.tif", overwrite = TRUE)
+
+
+KML(hotspots2_clipped,
+    filename = "inst/out/raster/hotspots2_clipped.kml",
+    col = viridis(n_distinct(predictions$hotspots2_clipped)))
+
 
 
 
