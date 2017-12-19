@@ -54,19 +54,19 @@ bsm_response <- predictions_resc %>%
   select(x = lon, y = lat, z = bsm_response) %>%
   rasterFromXYZ(crs = crs(template_raster()))
 names(bsm_response) <- "bsm_response"
-writeRaster(bsm_response, filename = "inst/out/raster/bsm_response.tif")
+writeRaster(bsm_response, filename = "inst/out/raster/bsm_response.tif", overwrite = TRUE)
 
 bsm_weight_pubs <- predictions_resc %>%
   select(x = lon, y = lat, z = bsm_weight_pubs) %>%
   rasterFromXYZ(crs = crs(template_raster()))
 names(bsm_weight_pubs) <- "bsm_weight_pubs"
-writeRaster(bsm_weight_pubs, filename = "inst/out/raster/bsm_weight_pubs.tif")
+writeRaster(bsm_weight_pubs, filename = "inst/out/raster/bsm_weight_pubs.tif", overwrite = TRUE)
 
 bsm_weight_pop <- predictions_resc %>%
   select(x = lon, y = lat, z = bsm_weight_pop) %>%
   rasterFromXYZ(crs = crs(template_raster()))
 names(bsm_weight_pop) <- "bsm_weight_pop"
-writeRaster(bsm_weight_pop, filename = "inst/out/raster/bsm_weight_pop.tif")
+writeRaster(bsm_weight_pop, filename = "inst/out/raster/bsm_weight_pop.tif", overwrite = TRUE)
 
 library(readr)
 write_csv(predictions_resc, path = "inst/out/raster/hotspots2_predictions.csv")
