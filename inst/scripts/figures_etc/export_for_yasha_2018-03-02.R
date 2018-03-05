@@ -30,16 +30,19 @@ save(response_matrix, file = file.path(cache_dir(), "bsm_1000_iter", "response_m
 load(file.path(cache_dir(), "bsm_1000_iter", "response_matrix.RData"))
 
 bsm_response <- drivers_full %>%
-	select(gridid) %>%
+	select(gridid, lon, lat) %>%
 	mutate(response_mean = rowMeans(response_matrix),
-	       response_sd = rowSds(response_matrix),
-	       response_median = rowMedians(response_matrix),
-	       response_median = rowMedians(response_matrix)
+	       response_sd = rowSds(response_matrix))
 
-response_mean <- rowMeans(response_matrix)
-rowSds(response_matrix)
+bsm_response_quantiles = response_matrix %>%
+	rowQuantiles(probs = c(0.05, 0.25, 0.5, 0.75, 0.95)) %>%
+	as.data.frame()
+names(bsm_response_quantiles) <- c("Q05", "Q25", "Q5", "Q75", "Q95")
 
+bsm_response <- bind_cols(bsm_response, bsm_response_quantiles) %>%
+	as.tbl()
 
+# This section needs to be adapted to compute the statistics for the actual layers. Or I'll ask Yasha.
 
 predictions <- drivers_full %>%
   mutate(weight_pubs = pubs_fit / sum(pubs_fit, na.rm = TRUE),
