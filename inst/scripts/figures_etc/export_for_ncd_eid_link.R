@@ -38,4 +38,4 @@ hs2_country <- hs2_grid %>%
 dir.create("inst/out/ncd-eid-link", showWarnings = FALSE)
 
 write_csv(hs2_grid, "inst/out/ncd-eid-link/hs2_grid.csv")
-write_csv(hs2_country, "inst/out/ncd-eid-link/pubcrawler_country.csv")
+write_csv(hs2_country, "inst/out/ncd-eid-link/hs2_country.csv")
