@@ -33,7 +33,7 @@ hs2_country <- hs2_grid %>%
   select(-gridid, -lon, -lat) %>%
   mutate(bsm_weight_pop_2 = bsm_response * pop) %>%
   summarize_all(~ sum(., na.rm = TRUE)) %>%
-  mutate(bsm_over_pop2 = bsm_weight_pop_2 / pop)
+  mutate(bsm_over_pop = bsm_weight_pop_2 / pop)
 
 dir.create("inst/out/ncd-eid-link", showWarnings = FALSE)
 
