@@ -8,7 +8,8 @@ predictions <- as.tibble(predictions)
 
 # Load the original drivers dataset for its country code grid cell.
 og_drivers <- read_tsv("data-raw/eid08_drivers_19OCT11.txt") %>%
-  select(gridid = GridID, country)
+  select(gridid = GridID, country) %>%
+  mutate(country = recode(country, Mauretania = "Mauritania"))
 
 # Pull the pubs model variable from the drivers data.
 pubs <- drivers %>%
