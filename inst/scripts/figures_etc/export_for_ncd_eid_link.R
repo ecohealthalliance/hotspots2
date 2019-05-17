@@ -36,7 +36,21 @@ hs2_country <- hs2_grid %>%
   summarize_all(~ sum(., na.rm = TRUE)) %>%
   mutate(bsm_over_pop = bsm_weight_pop_2 / pop)
 
+# Load grid with country regions and create an aggregation using those regions.
+regions <- read_csv("data-raw/country_region_grid.csv") %>%
+  select(lon, lat, gridid, region)
+
+hs2_region <- hs2_grid %>%
+  select(-country) %>%
+  left_join(regions, by = c("lon", "lat", "gridid")) %>%
+  group_by(region) %>%
+  mutate(bsm_weight_pop_2 = bsm_response * pop) %>%
+  summarize_all(~ sum(., na.rm = TRUE)) %>%
+  mutate(bsm_over_pop = bsm_weight_pop_2 / pop)
+
+
 dir.create("inst/out/ncd-eid-link", showWarnings = FALSE)
 
 write_csv(hs2_grid, "inst/out/ncd-eid-link/hs2_grid.csv")
 write_csv(hs2_country, "inst/out/ncd-eid-link/hs2_country.csv")
+write_csv(hs2_region, "inst/out/ncd-eid-link/hs2_region.csv")
