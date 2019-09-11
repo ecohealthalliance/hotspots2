@@ -12,6 +12,9 @@ data(decadal)
 data(change)
 data(eid_metadata)
 data(event_coverage)
+data(continents)
+
+drivers <- left_join(drivers, continents, by = "iso3")
 
 # Set our directory name and the number of sample iterations we want to conduct.
 model_name <- "asl_2050_continent"
@@ -41,7 +44,8 @@ predictor_names <- c("pop",
                      "gens",
                      "mamdiv",
                      "poultry",
-                     "livestock_mam")
+                     "livestock_mam",
+                     "continent")
 
 # Create output and cache directories.
 current_cache_dir <- file.path(cache_dir(), model_name)
@@ -77,6 +81,7 @@ save(bsm, file = file.path(current_cache_dir, paste0(model_name, ".RData")))
 relative_influence_plots(bsm, model_name)
 partial_dependence_plots(bsm, bsm_events, model_name)
 partial_dependence_plot_truncated(bsm, bsm_events, model_name)
+partial_dependence_plot_factors(bsm, bsm_events, model_name)
 
 
 
@@ -90,7 +95,7 @@ cat("Summary\n")
 summarize_multibrt(bsm, .parallel = TRUE)
 sink()
 
-intsum <- interaction_summary_multibrt(bsm, .parallel = FALSE)
+intsum <- interaction_summary_multibrt(bsm, .parallel = TRUE)
 names <- c("past_change" = "Pasture Change",
            "earth6_veg_herba" = "Herbaceous Veg.",
            "earth9_urban" = "Urban/Built-up",
@@ -113,7 +118,8 @@ names <- c("past_change" = "Pasture Change",
            "past" = "Pasture",
            "earth2_trees_everg" = "Evergreen Broadleaf\nTrees",
            "livestock_mam" = "Livestock Mammal\nHeadcount",
-           "pubs_fit" = "Reporting Effort")
+           "pubs_fit" = "Reporting Effort",
+           "continent" = "Continent")
 intsum$var1.names <- revalue(intsum$var1.names, replace = names)
 intsum$var2.names <- revalue(intsum$var2.names, replace = names)
 
@@ -129,3 +135,83 @@ sd(pde)
 pde %>%
   quantile(c(0.05, 0.25, 0.5, 0.75, 0.95))
 sink()
+
+
+
+# Livestock mammal interaction plots
+
+bsm[[1]]$gbm.call$predictor.names
+
+inter_list <- map(bsm, plot.gbm,
+                  i.var = c("livestock_mam", "continent"),
+                  return.grid = TRUE,
+                  type = "response")
+
+inter_tbl <- bind_rows(inter_list, .id = "model") %>%
+  as_tibble()
+
+seq1 <- seq(min(inter_tbl$livestock_mam), max(inter_tbl$livestock_mam), length.out = 101)
+group_width = seq1[2]/2
+seq2 <- seq1[-1] - group_width
+
+to_plot <- inter_tbl %>%
+  mutate(mam_group = cut(livestock_mam, breaks = seq1, include.lowest = TRUE)) %>%
+  group_by(mam_group) %>%
+  nest() %>%
+  mutate(mam_midpoint = seq2) %>%
+  unnest(cols = "data") %>%
+  group_by(continent, mam_midpoint) %>%
+  summarize(mam_mean = mean(livestock_mam),
+            q05 = quantile(y, 0.05, names = FALSE, na.rm = TRUE),
+            q50 = quantile(y, 0.5, names = FALSE, na.rm = TRUE),
+            q95 = quantile(y, 0.95, names = FALSE, na.rm = TRUE))
+
+
+ggplot(data = to_plot, aes(x = mam_mean)) +
+  geom_line(mapping = aes(y = q50, color = continent)) +
+  theme_bw(base_size = 11, base_family = "") +
+  labs(x = "Livestock Mammal Headcount",
+       y = "EID Event Risk Index",
+       title = "Livestock Mammal Headcount by Continent",
+       color = "Continent")
+
+ggsave(file.path(current_out_dir, paste0(model_name, "_livestock_by_continent.png")),
+       height = 7, width = 7)
+ggsave(file.path(current_out_dir, paste0(model_name, "_livestock_by_continent.pdf")),
+       height = 7, width = 7)
+
+
+ggplot(data = to_plot, aes(x = mam_mean)) +
+  facet_wrap(~ continent, ncol = 3) +
+
+  geom_ribbon(mapping = aes(ymin = q05, ymax = q95, fill = continent), alpha = 0.5) +
+  geom_line(mapping = aes(y = q50, color = continent)) +
+  theme_bw(base_size = 11, base_family = "") +
+  labs(x = "Livestock Mammal Headcount",
+       y = "EID Event Risk Index (and 90% CI)",
+       title = "Livestock Mammal Headcount by Continent",
+       color = "Continent",
+       fill = "Continent")
+
+ggsave(file.path(current_out_dir, paste0(model_name, "_livestock_by_continent_faceted.png")),
+       height = 7, width = 7)
+ggsave(file.path(current_out_dir, paste0(model_name, "_livestock_by_continent_faceted.pdf")),
+       height = 7, width = 7)
+
+
+to_plot_centered <- to_plot %>%
+  group_by(continent) %>%
+  mutate_at(vars(starts_with("q")), ~ . - mean(.))
+
+ggplot(data = to_plot_centered, aes(x = mam_mean)) +
+  geom_line(mapping = aes(y = q50, color = continent)) +
+  theme_bw(base_size = 11, base_family = "") +
+  labs(x = "Livestock Mammal Headcount",
+       y = "EID Event Risk Index, Centered by Continent",
+       title = "Livestock Mammal Headcount by Continent",
+       color = "Continent")
+
+ggsave(file.path(current_out_dir, paste0(model_name, "_livestock_by_continent_centered.png")),
+       height = 7, width = 7)
+ggsave(file.path(current_out_dir, paste0(model_name, "_livestock_by_continent_centered.pdf")),
+       height = 7, width = 7)

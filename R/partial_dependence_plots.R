@@ -2,15 +2,9 @@ partial_dependence_plots <- function(model, events, model_name) {
   library(ggplot2)
   # library(boot)
 
-  data(drivers)
-  # load(file.path(current_cache_dir, paste0(model_name, ".RData")))
-
-
-  # While I'm getting this working, do it with a small subset of models.
-  # model <- model[1:5]
-
-
-  to_plot <- model[[1]]$gbm.call$predictor.names
+  to_plot <- model[[1]]$gbm.call$dataframe %>%
+    select_if(is.numeric) %>%
+    names()
 
   partial_dependence_raw <- list()
 
@@ -80,7 +74,8 @@ partial_dependence_plots <- function(model, events, model_name) {
              "past" = "Pasture",
              "earth2_trees_everg" = "Evergreen Broadleaf\nTrees",
              "livestock_mam" = "Livestock Mammal\nHeadcount",
-             "pubs_fit" = "Reporting Effort")
+             "pubs_fit" = "Reporting Effort",
+             "continent" = "Continent")
 
   groups <- list("Human Activity" = "pop",
                  "Human Activity" = "pop_change",
@@ -104,7 +99,8 @@ partial_dependence_plots <- function(model, events, model_name) {
                  "Environment" = "earth8_veg_flood",
                  "Environment" = "earth10_snowice",
                  "Environment" = "earth11_barren",
-                 "Environment" = "earth12_water")
+                 "Environment" = "earth12_water",
+                 "Geography" = "continent")
 
   pdq$Group <- factor(pdq$name)
   levels(pdq$Group) <- groups

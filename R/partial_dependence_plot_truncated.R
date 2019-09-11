@@ -10,7 +10,9 @@ partial_dependence_plot_truncated <- function(model, events, model_name) {
   # model <- model[1:5]
 
 
-  to_plot <- model[[1]]$gbm.call$predictor.names
+  to_plot <- model[[1]]$gbm.call$dataframe %>%
+    select_if(is.factor) %>%
+    names()
 
   partial_dependence_raw <- list()
 
@@ -84,7 +86,8 @@ partial_dependence_plot_truncated <- function(model, events, model_name) {
              "past" = "Pasture",
              "earth2_trees_everg" = "Evergreen Broadleaf\nTrees",
              "livestock_mam" = "Livestock Mammal\nHeadcount",
-             "pubs_fit" = "Reporting Effort")
+             "pubs_fit" = "Reporting Effort",
+             "continent" = "Continent")
 
   groups <- list("Human Activity" = "pop",
                  "Human Activity" = "pop_change",
@@ -108,7 +111,8 @@ partial_dependence_plot_truncated <- function(model, events, model_name) {
                  "Environment" = "earth8_veg_flood",
                  "Environment" = "earth10_snowice",
                  "Environment" = "earth11_barren",
-                 "Environment" = "earth12_water")
+                 "Environment" = "earth12_water",
+                 "Geography" = "continent")
 
   pdq$Group <- factor(pdq$name)
   levels(pdq$Group) <- groups
