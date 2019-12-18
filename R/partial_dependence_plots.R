@@ -2,9 +2,7 @@ partial_dependence_plots <- function(model, events, model_name) {
   library(ggplot2)
   # library(boot)
 
-  to_plot <- model[[1]]$gbm.call$dataframe %>%
-    select_if(is.numeric) %>%
-    names()
+  to_plot <- model[[1]]$gbm.call$predictor.names
 
   partial_dependence_raw <- list()
 

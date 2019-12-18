@@ -10,9 +10,7 @@ partial_dependence_plot_truncated <- function(model, events, model_name) {
   # model <- model[1:5]
 
 
-  to_plot <- model[[1]]$gbm.call$dataframe %>%
-    select_if(is.factor) %>%
-    names()
+  to_plot <- model[[1]]$gbm.call$predictor.names
 
   partial_dependence_raw <- list()
 

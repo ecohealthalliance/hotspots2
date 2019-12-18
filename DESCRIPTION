@@ -16,7 +16,8 @@ Depends:
     doParallel,
     foreach,
     tidyr,
-    purrr
+    purrr,
+    purrrlyr
 Suggests:
     doParallel,
     foreach,
