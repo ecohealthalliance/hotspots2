@@ -7,8 +7,8 @@ library(RColorBrewer)
 
 # Edit these to change the output of the function.
 
-out_dir <- "inst/out/maps_2019-11-06"
-out_filename <- "armenia-azerbaijan-georgia-map" # Without file extension
+OUT_DIR <- "inst/out/maps_2019-11-06"
+OUT_FILENAME <- "armenia-azerbaijan-georgia-map" # Without file extension
 
 xmin <- 41 - 2.5
 xmax <- 50 + 1.5
@@ -29,7 +29,7 @@ legend_position <- "left"
 # Script
 #--------
 
-dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
+dir.create(OUT_DIR, showWarnings = FALSE, recursive = TRUE)
 
 data(predictions)
 data(country_outlines)
@@ -98,8 +98,8 @@ ggplot() +
   eidrc_theme() +
   labs(x = NULL, y = NULL)
 
-ggsave(file.path(out_dir, paste0(out_filename, "_inferno.pdf")), height = 4, width = 6)
-ggsave(file.path(out_dir, paste0(out_filename, "_inferno.png")), height = 4, width = 6, dpi = 800)
+ggsave(file.path(OUT_DIR, paste0(OUT_FILENAME, "_inferno.pdf")), height = 4, width = 6)
+ggsave(file.path(OUT_DIR, paste0(OUT_FILENAME, "_inferno.png")), height = 4, width = 6, dpi = 800)
 
 
 # Viridis
@@ -114,8 +114,8 @@ ggplot() +
   eidrc_theme() +
   labs(x = NULL, y = NULL)
 
-ggsave(file.path(out_dir, paste0(out_filename, "_viridis.pdf")), height = 4, width = 6)
-ggsave(file.path(out_dir, paste0(out_filename, "_viridis.png")), height = 4, width = 6, dpi = 800)
+ggsave(file.path(OUT_DIR, paste0(OUT_FILENAME, "_viridis.pdf")), height = 4, width = 6)
+ggsave(file.path(OUT_DIR, paste0(OUT_FILENAME, "_viridis.png")), height = 4, width = 6, dpi = 800)
 
 
 
@@ -131,5 +131,5 @@ ggplot() +
   eidrc_theme() +
   labs(x = NULL, y = NULL)
 
-ggsave(file.path(out_dir, paste0(out_filename, "_spectral.pdf")), height = 4, width = 6)
-ggsave(file.path(out_dir, paste0(out_filename, "_spectral.png")), height = 4, width = 6, dpi = 800)
+ggsave(file.path(OUT_DIR, paste0(OUT_FILENAME, "_spectral.pdf")), height = 4, width = 6)
+ggsave(file.path(OUT_DIR, paste0(OUT_FILENAME, "_spectral.png")), height = 4, width = 6, dpi = 800)
