@@ -35,8 +35,9 @@ vignettes/*.pdf
 
 # Raw data directory, as it might get pretty big.
 /data-raw/*
-# But not scripts in it
+# But not scripts in it, or its README.md
 !/data-raw/*.R
+!/data-raw/README.md
 
 # Generated output. I'll move that around manually,
 # and we don't want it cluttering up the repo.
