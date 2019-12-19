@@ -1,0 +1,15 @@
+
+> cat("AUC\n")
+AUC
+
+> auc(e_fixed)
+[1] 0.7744476
+
+> cat("\nTSS\n")
+
+TSS
+
+> tss(e_fixed)
+[1] 0.4059864
+
+> sink()

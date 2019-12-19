@@ -1,0 +1,287 @@
+"var1.names","var2.names","int.mean","int.min","int.q25","int.med","int.q75","int.max"
+"Herbaceous Veg.","Pasture Change",0.413533834586466,0.01,0.14,0.25,0.46,3.61
+"Pasture Change","Cropland Change",0.860608974358974,0.01,0.13,0.24,0.6225,35.22
+"Cropland Change","Cropland",0.56484496124031,0.02,0.12,0.235,0.59,9.14
+"Global Envir. Strat.","Cropland Change",0.503150684931507,0.01,0.1,0.23,0.5125,12.14
+"Pasture Change","Population",0.442649572649573,0.02,0.1125,0.23,0.42,7.68
+"Urban/Built-up","Pasture Change",0.299154929577465,0.01,0.0925,0.225,0.3675,1.77
+"Deciduous Broadleaf
+Trees","Pasture Change",0.546298701298701,0.02,0.1,0.22,0.5275,11.51
+"Mixed/Other Trees","Cropland Change",0.448787878787879,0.02,0.11,0.22,0.46,4.52
+"Global Envir. Strat.","Cultivated/Managed
+Veg.",0.650862068965517,0.01,0.09,0.22,0.6125,18.02
+"Global Envir. Strat.","Pasture Change",0.732350119904077,0.01,0.1,0.22,0.52,31.79
+"Mammal Biodiversity","Pasture Change",0.550971786833856,0.01,0.1,0.22,0.5,12.16
+"Pasture Change","Pasture",0.536071428571429,0.02,0.12,0.22,0.54,11.94
+"Mixed/Other Trees","Pasture Change",0.59375,0.02,0.09,0.215,0.6225,12.16
+"Regularly Flooded Veg.","Cultivated/Managed
+Veg.",0.273846153846154,0.02,0.0625,0.21,0.4125,0.83
+"Deciduous Broadleaf
+Trees","Cropland Change",0.371063829787234,0.02,0.09,0.21,0.37,4.75
+"Herbaceous Veg.","Mixed/Other Trees",0.283333333333333,0.06,0.125,0.21,0.39,0.77
+"Livestock Mammal
+Headcount","Pasture Change",0.371853658536585,0.01,0.08,0.21,0.38,5.58
+"Mammal Biodiversity","Cropland",0.411081081081081,0.01,0.09,0.21,0.39,4.48
+"Mammal Biodiversity","Cropland Change",0.471927272727273,0.02,0.095,0.21,0.435,10.8
+"Pasture Change","Cropland",0.577222222222222,0.01,0.11,0.21,0.48,5.38
+"Herbaceous Veg.","Pasture",0.379416666666667,0.02,0.09,0.2,0.445,2.51
+"Global Envir. Strat.","Cropland",0.518082191780822,0.01,0.09,0.2,0.435,10.71
+"Mammal Biodiversity","Global Envir. Strat.",0.499923954372624,0.01,0.1,0.2,0.52,20.05
+"Cultivated/Managed
+Veg.","Cropland Change",0.488722222222222,0.02,0.11,0.195,0.445,5.81
+"Cropland Change","Population",0.408248175182482,0.02,0.09,0.19,0.4,4.28
+"Evergreen Broadleaf
+Trees","Pasture",0.39222972972973,0.01,0.09,0.19,0.475,6.93
+"Herbaceous Veg.","Deciduous Broadleaf
+Trees",0.198823529411765,0.05,0.11,0.19,0.25,0.43
+"Cultivated/Managed
+Veg.","Pasture Change",0.364051282051282,0.01,0.09,0.19,0.355,9.63
+"Urban/Built-up","Evergreen/Deciduous
+Needleleaf Trees",0.222432432432432,0.02,0.09,0.19,0.27,1.02
+"Urban/Built-up","Deciduous Broadleaf
+Trees",0.292307692307692,0.03,0.08,0.19,0.32,1.46
+"Urban/Built-up","Mixed/Other Trees",0.274857142857143,0.01,0.09,0.19,0.24,1.9
+"Global Envir. Strat.","Deciduous Broadleaf
+Trees",0.396540880503145,0.01,0.095,0.19,0.46,3.27
+"Global Envir. Strat.","Pasture",0.43222602739726,0.01,0.09,0.19,0.42,6.54
+"Mammal Biodiversity","Mixed/Other Trees",0.389230769230769,0.01,0.08,0.19,0.46,3.68
+"Evergreen Broadleaf
+Trees","Pasture Change",0.544285714285714,0.02,0.1,0.185,0.45,24.09
+"Population Change","Pasture Change",0.370743243243243,0.02,0.08,0.185,0.375,2.4
+"Continent","Pasture Change",0.45254295532646,0.01,0.08,0.18,0.42,8.14
+"Cropland Change","Pasture",0.42212389380531,0.01,0.08,0.18,0.41,8.44
+"Shrubs","Cropland Change",0.251506849315069,0.02,0.08,0.18,0.32,1.32
+"Cultivated/Managed
+Veg.","Cropland",0.359363636363636,0.01,0.1,0.18,0.425,4.04
+"Regularly Flooded Veg.","Cropland Change",0.239016393442623,0.02,0.09,0.18,0.33,0.94
+"Global Envir. Strat.","Population",0.451148648648649,0.02,0.09,0.18,0.38,14.88
+"Mammal Biodiversity","Pasture",0.442085561497326,0.01,0.08,0.18,0.435,5.65
+"Deciduous Broadleaf
+Trees","Population Change",0.275,0.05,0.0925,0.175,0.3475,1.27
+"Continent","Mammal Biodiversity",0.495194805194805,0.01,0.08,0.17,0.41,9.95
+"Evergreen/Deciduous
+Needleleaf Trees","Cropland Change",0.30032,0.02,0.08,0.17,0.4,2.92
+"Mixed/Other Trees","Deciduous Broadleaf
+Trees",0.344516129032258,0.01,0.105,0.17,0.43,1.38
+"Global Envir. Strat.","Population Change",0.382542372881356,0.01,0.09,0.17,0.38,6.61
+"Livestock Mammal
+Headcount","Global Envir. Strat.",0.379543378995434,0.01,0.07,0.17,0.42,4.85
+"Mammal Biodiversity","Shrubs",0.492093023255814,0.01,0.09,0.17,0.47,5.79
+"Poultry","Cropland Change",0.234074074074074,0.02,0.09,0.17,0.28,1.74
+"Herbaceous Veg.","Cropland",0.309827586206897,0.02,0.1,0.165,0.25,2.77
+"Population Change","Cropland",0.269074074074074,0.03,0.09,0.165,0.2925,1.6
+"Population Change","Cropland Change",0.329722222222222,0.01,0.0975,0.165,0.36,5.05
+"Evergreen/Deciduous
+Needleleaf Trees","Pasture Change",0.420335195530726,0.02,0.09,0.16,0.365,7.67
+"Mixed/Other Trees","Evergreen/Deciduous
+Needleleaf Trees",0.253652173913043,0.01,0.09,0.16,0.27,2.53
+"Shrubs","Pasture Change",0.35218487394958,0.02,0.07,0.16,0.34,5.14
+"Herbaceous Veg.","Evergreen/Deciduous
+Needleleaf Trees",0.232424242424242,0.02,0.08,0.16,0.24,1.53
+"Urban/Built-up","Population",0.368103448275862,0.01,0.09,0.16,0.36,4.53
+"Global Envir. Strat.","Evergreen Broadleaf
+Trees",0.251327433628319,0.01,0.08,0.16,0.28,2.18
+"Global Envir. Strat.","Mixed/Other Trees",0.399304347826087,0.01,0.08,0.16,0.31,8.34
+"Mammal Biodiversity","Population",0.300183823529412,0.01,0.08,0.16,0.3525,3.15
+"Poultry","Pasture Change",0.34844262295082,0.01,0.08,0.16,0.29,4.16
+"Continent","Deciduous Broadleaf
+Trees",0.297719298245614,0.01,0.07,0.155,0.3775,2.35
+"Continent","Global Envir. Strat.",0.338141592920354,0,0.06,0.155,0.3275,3.8
+"Shrubs","Cropland",0.2208,0.03,0.09,0.15,0.2525,1.02
+"Poultry","Herbaceous Veg.",0.2095,0.02,0.09,0.15,0.2625,0.7
+"Continent","Mixed/Other Trees",0.27358024691358,0.01,0.06,0.15,0.29,3.13
+"Evergreen/Deciduous
+Needleleaf Trees","Cropland",0.355886524822695,0.01,0.09,0.15,0.38,3.7
+"Cultivated/Managed
+Veg.","Evergreen/Deciduous
+Needleleaf Trees",0.330384615384615,0.02,0.09,0.15,0.3075,4.31
+"Cultivated/Managed
+Veg.","Deciduous Broadleaf
+Trees",0.266172839506173,0.01,0.09,0.15,0.27,2.16
+"Cultivated/Managed
+Veg.","Shrubs",0.181707317073171,0.02,0.07,0.15,0.24,0.55
+"Cultivated/Managed
+Veg.","Herbaceous Veg.",0.233272727272727,0.02,0.085,0.15,0.275,1.58
+"Regularly Flooded Veg.","Pasture Change",0.241869918699187,0.02,0.085,0.15,0.315,1.49
+"Global Envir. Strat.","Regularly Flooded Veg.",0.261619718309859,0.01,0.07,0.15,0.2775,2.1
+"Livestock Mammal
+Headcount","Cropland",0.199779411764706,0.01,0.07,0.15,0.28,1.27
+"Livestock Mammal
+Headcount","Cropland Change",0.262131147540984,0.01,0.08,0.15,0.3475,2.53
+"Mammal Biodiversity","Deciduous Broadleaf
+Trees",0.349865771812081,0.02,0.08,0.15,0.43,3.76
+"Mammal Biodiversity","Herbaceous Veg.",0.262266666666667,0.01,0.08,0.15,0.275,2.22
+"Mammal Biodiversity","Cultivated/Managed
+Veg.",0.370593607305936,0.01,0.07,0.15,0.375,6.79
+"Mammal Biodiversity","Urban/Built-up",0.268421052631579,0.01,0.07,0.15,0.3075,2.03
+"Population","Pasture",0.266746987951807,0.02,0.09,0.15,0.31,1.94
+"Population Change","Population",0.29043956043956,0.02,0.08,0.15,0.285,2.42
+"Poultry","Population Change",0.2762,0.02,0.0825,0.15,0.265,2.33
+"Continent","Cropland Change",0.313417721518987,0.01,0.06,0.145,0.3075,4.44
+"Mixed/Other Trees","Pasture",0.262166666666667,0.02,0.07,0.145,0.26,3.21
+"Livestock Mammal
+Headcount","Cultivated/Managed
+Veg.",0.236930693069307,0.01,0.07,0.145,0.3075,1.49
+"Evergreen/Deciduous
+Needleleaf Trees","Population",0.1875,0.02,0.06,0.14,0.27,1.37
+"Evergreen Broadleaf
+Trees","Cropland Change",0.272352941176471,0.02,0.08,0.14,0.295,3.51
+"Evergreen Broadleaf
+Trees","Evergreen/Deciduous
+Needleleaf Trees",0.185789473684211,0.02,0.06,0.14,0.18,1.46
+"Deciduous Broadleaf
+Trees","Evergreen/Deciduous
+Needleleaf Trees",0.2375,0.02,0.0775,0.14,0.2425,2.57
+"Mixed/Other Trees","Evergreen Broadleaf
+Trees",0.229852941176471,0.02,0.0775,0.14,0.2925,1.2
+"Herbaceous Veg.","Cropland Change",0.279298245614035,0.02,0.1,0.14,0.22,2.6
+"Herbaceous Veg.","Shrubs",0.440588235294118,0.02,0.05,0.14,0.27,4.19
+"Cultivated/Managed
+Veg.","Population",0.233233532934132,0.02,0.07,0.14,0.315,1.34
+"Regularly Flooded Veg.","Pasture",0.212,0.03,0.08,0.14,0.22,1.63
+"Urban/Built-up","Cropland Change",0.304666666666667,0.02,0.07,0.14,0.305,4.24
+"Urban/Built-up","Cultivated/Managed
+Veg.",0.305324675324675,0.01,0.05,0.14,0.28,7.29
+"Livestock Mammal
+Headcount","Population",0.222688172043011,0.01,0.06,0.14,0.23,2.47
+"Mammal Biodiversity","Population Change",0.398794326241135,0.02,0.08,0.14,0.42,7.67
+"Population","Cropland",0.242424242424242,0.02,0.08,0.14,0.28,2.82
+"Poultry","Mixed/Other Trees",0.177619047619048,0.02,0.07,0.14,0.21,0.87
+"Poultry","Global Envir. Strat.",0.255909090909091,0.01,0.07,0.14,0.29,2.95
+"Cultivated/Managed
+Veg.","Mixed/Other Trees",0.294545454545455,0.01,0.07,0.135,0.25,5.54
+"Urban/Built-up","Herbaceous Veg.",0.188181818181818,0.02,0.065,0.135,0.2225,0.68
+"Urban/Built-up","Population Change",0.17975,0.02,0.07,0.135,0.2125,0.87
+"Global Envir. Strat.","Shrubs",0.2533,0.01,0.0575,0.135,0.315,3.03
+"Livestock Mammal
+Headcount","Evergreen/Deciduous
+Needleleaf Trees",0.254591836734694,0.01,0.07,0.135,0.2575,2.95
+"Continent","Livestock Mammal
+Headcount",0.252980132450331,0,0.06,0.13,0.225,3.49
+"Continent","Population",0.229807692307692,0.01,0.0575,0.13,0.25,4.94
+"Evergreen/Deciduous
+Needleleaf Trees","Population Change",0.2236,0.01,0.0625,0.13,0.24,2.11
+"Evergreen Broadleaf
+Trees","Population",0.222075471698113,0.01,0.07,0.13,0.23,2.09
+"Cultivated/Managed
+Veg.","Population Change",0.257741935483871,0.01,0.06,0.13,0.24,2.74
+"Regularly Flooded Veg.","Population Change",0.218771929824561,0.02,0.06,0.13,0.29,1.5
+"Urban/Built-up","Pasture",0.225,0.02,0.0775,0.13,0.2775,1.75
+"Global Envir. Strat.","Evergreen/Deciduous
+Needleleaf Trees",0.299782608695652,0.01,0.06,0.13,0.2725,6.81
+"Livestock Mammal
+Headcount","Evergreen Broadleaf
+Trees",0.181012658227848,0.01,0.05,0.13,0.22,1.65
+"Livestock Mammal
+Headcount","Shrubs",0.206216216216216,0.01,0.04,0.13,0.26,1.19
+"Livestock Mammal
+Headcount","Mammal Biodiversity",0.240079365079365,0.01,0.06,0.13,0.26,2.12
+"Livestock Mammal
+Headcount","Poultry",0.310126582278481,0.01,0.06,0.13,0.31,3.66
+"Mammal Biodiversity","Evergreen Broadleaf
+Trees",0.270308641975309,0.01,0.07,0.13,0.31,2.77
+"Pasture","Cropland",0.201683168316832,0.02,0.07,0.13,0.24,1.69
+"Poultry","Cropland",0.232758620689655,0.02,0.06,0.13,0.295,1.24
+"Poultry","Cultivated/Managed
+Veg.",0.2573,0.01,0.06,0.13,0.2725,4.05
+"Poultry","Regularly Flooded Veg.",0.1575,0.01,0.06,0.13,0.1875,0.63
+"Shrubs","Evergreen/Deciduous
+Needleleaf Trees",0.161538461538462,0.02,0.07,0.125,0.15,0.94
+"Cultivated/Managed
+Veg.","Pasture",0.199210526315789,0.01,0.09,0.125,0.27,1.35
+"Poultry","Deciduous Broadleaf
+Trees",0.281,0.01,0.06,0.125,0.2725,2.18
+"Continent","Cropland",0.275809523809524,0.01,0.04,0.12,0.28,3.41
+"Continent","Evergreen/Deciduous
+Needleleaf Trees",0.229,0.01,0.05,0.12,0.3025,2.25
+"Continent","Cultivated/Managed
+Veg.",0.268266666666667,0.01,0.06,0.12,0.2875,3.3
+"Continent","Pasture",0.333585858585859,0.01,0.06,0.12,0.3,7.58
+"Evergreen/Deciduous
+Needleleaf Trees","Pasture",0.2274,0.02,0.07,0.12,0.28,1.3
+"Deciduous Broadleaf
+Trees","Cropland",0.179230769230769,0.02,0.07,0.12,0.275,0.74
+"Deciduous Broadleaf
+Trees","Pasture",0.233088235294118,0.03,0.08,0.12,0.2425,1.22
+"Mixed/Other Trees","Cropland",0.212222222222222,0.02,0.0675,0.12,0.2025,1.4
+"Mixed/Other Trees","Population",0.320921052631579,0.02,0.0775,0.12,0.27,3.94
+"Urban/Built-up","Cropland",0.326575342465753,0.02,0.07,0.12,0.26,5.18
+"Global Envir. Strat.","Herbaceous Veg.",0.2095,0.01,0.0675,0.12,0.2425,1.99
+"Livestock Mammal
+Headcount","Deciduous Broadleaf
+Trees",0.32468085106383,0.02,0.06,0.12,0.355,3.49
+"Livestock Mammal
+Headcount","Mixed/Other Trees",0.156896551724138,0.01,0.06,0.12,0.18,0.65
+"Livestock Mammal
+Headcount","Herbaceous Veg.",0.185945945945946,0.01,0.06,0.12,0.21,0.83
+"Livestock Mammal
+Headcount","Pasture",0.284385964912281,0.01,0.06,0.12,0.3175,2.9
+"Livestock Mammal
+Headcount","Population Change",0.158070175438596,0.01,0.06,0.12,0.22,0.8
+"Population Change","Pasture",0.263432835820896,0.02,0.065,0.12,0.225,4.45
+"Deciduous Broadleaf
+Trees","Evergreen Broadleaf
+Trees",0.255454545454545,0.02,0.06,0.115,0.2825,4.3
+"Poultry","Pasture",0.189814814814815,0.02,0.0725,0.115,0.2275,0.85
+"Continent","Evergreen Broadleaf
+Trees",0.290671641791045,0.01,0.06,0.11,0.2725,4.28
+"Continent","Urban/Built-up",0.25943661971831,0,0.05,0.11,0.285,2.63
+"Evergreen Broadleaf
+Trees","Cropland",0.145952380952381,0.02,0.0525,0.11,0.195,0.59
+"Evergreen Broadleaf
+Trees","Population Change",0.184166666666667,0.03,0.06,0.11,0.1975,1.52
+"Shrubs","Mixed/Other Trees",0.141666666666667,0.05,0.0825,0.11,0.1525,0.45
+"Herbaceous Veg.","Evergreen Broadleaf
+Trees",0.183617021276596,0.01,0.05,0.11,0.18,1.24
+"Herbaceous Veg.","Population",0.15728813559322,0.01,0.06,0.11,0.19,0.9
+"Herbaceous Veg.","Population Change",0.212352941176471,0.03,0.07,0.11,0.21,1.33
+"Regularly Flooded Veg.","Evergreen/Deciduous
+Needleleaf Trees",0.14,0.02,0.0825,0.11,0.12,0.55
+"Regularly Flooded Veg.","Mixed/Other Trees",0.158918918918919,0.01,0.05,0.11,0.24,0.68
+"Regularly Flooded Veg.","Population",0.155593220338983,0.01,0.065,0.11,0.22,0.51
+"Global Envir. Strat.","Urban/Built-up",0.234242424242424,0.01,0.05,0.11,0.24,3.64
+"Mammal Biodiversity","Evergreen/Deciduous
+Needleleaf Trees",0.205176470588235,0.01,0.05,0.11,0.23,2.05
+"Poultry","Urban/Built-up",0.228571428571429,0.01,0.05,0.11,0.24,2.03
+"Continent","Population Change",0.190512820512821,0.01,0.05,0.105,0.26,1.17
+"Mixed/Other Trees","Population Change",0.142692307692308,0.03,0.07,0.105,0.2125,0.34
+"Urban/Built-up","Evergreen Broadleaf
+Trees",0.200689655172414,0.01,0.06,0.105,0.17,1.62
+"Livestock Mammal
+Headcount","Urban/Built-up",0.377428571428571,0.01,0.04,0.105,0.195,10.08
+"Poultry","Evergreen Broadleaf
+Trees",0.147564102564103,0.02,0.05,0.105,0.175,0.73
+"Continent","Shrubs",0.197868852459016,0.01,0.06,0.1,0.22,1.39
+"Continent","Regularly Flooded Veg.",0.207073170731707,0.01,0.0425,0.1,0.235,1.8
+"Continent","Poultry",0.22,0,0.05,0.1,0.21,1.81
+"Deciduous Broadleaf
+Trees","Population",0.173023255813954,0.02,0.06,0.1,0.235,0.88
+"Shrubs","Deciduous Broadleaf
+Trees",0.199047619047619,0.03,0.09,0.1,0.19,0.84
+"Shrubs","Pasture",0.186551724137931,0.02,0.04,0.1,0.19,1.13
+"Cultivated/Managed
+Veg.","Evergreen Broadleaf
+Trees",0.179789473684211,0.02,0.05,0.1,0.2,1.47
+"Regularly Flooded Veg.","Cropland",0.163666666666667,0.02,0.07,0.1,0.21,0.54
+"Regularly Flooded Veg.","Shrubs",0.202727272727273,0.03,0.065,0.1,0.145,0.81
+"Urban/Built-up","Regularly Flooded Veg.",0.1925,0.01,0.05,0.1,0.165,1.01
+"Mammal Biodiversity","Regularly Flooded Veg.",0.1912,0.01,0.06,0.1,0.17,2.31
+"Poultry","Shrubs",0.121666666666667,0.03,0.0525,0.1,0.1625,0.37
+"Poultry","Mammal Biodiversity",0.237216494845361,0.01,0.05,0.1,0.21,3.23
+"Continent","Herbaceous Veg.",0.2696,0.01,0.05,0.09,0.215,3.71
+"Regularly Flooded Veg.","Evergreen Broadleaf
+Trees",0.155873015873016,0.01,0.07,0.09,0.18,0.92
+"Regularly Flooded Veg.","Herbaceous Veg.",0.24,0.02,0.045,0.09,0.1075,2.01
+"Poultry","Evergreen/Deciduous
+Needleleaf Trees",0.2095,0.02,0.0475,0.09,0.1925,2.36
+"Shrubs","Evergreen Broadleaf
+Trees",0.190526315789474,0.01,0.05,0.08,0.16,3.76
+"Shrubs","Population",0.138837209302326,0.02,0.04,0.08,0.2,0.56
+"Shrubs","Population Change",0.143030303030303,0.02,0.06,0.08,0.2,0.51
+"Livestock Mammal
+Headcount","Regularly Flooded Veg.",0.120714285714286,0.01,0.0375,0.08,0.1375,0.48
+"Poultry","Population",0.140588235294118,0.01,0.045,0.08,0.2,0.63
+"Regularly Flooded Veg.","Deciduous Broadleaf
+Trees",0.114545454545455,0.03,0.03,0.06,0.135,0.36
+"Urban/Built-up","Shrubs",0.152666666666667,0.01,0.035,0.05,0.145,0.93
+NA," ",0,0,0,0,0,0

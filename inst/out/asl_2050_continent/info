@@ -1,0 +1,13 @@
+Model Run Parameters
+[1] "2019-09-11 15:17:54 EDT"
+[1] "asl_2050_continent"
+[1] 1000
+$tree.complexity
+[1] 3
+
+$learning.rate
+[1] 0.0035
+
+$n.trees
+[1] 35
+

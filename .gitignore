@@ -39,6 +39,3 @@ vignettes/*.pdf
 !/data-raw/*.R
 !/data-raw/README.md
 
-# Generated output. I'll move that around manually,
-# and we don't want it cluttering up the repo.
-/inst/out/
