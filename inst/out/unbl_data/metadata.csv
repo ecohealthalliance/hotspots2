@@ -1,0 +1,6 @@
+"","names","definitions"
+"1","gridid","Numeric id for global grid"
+"2","lon","Longitude in WGS84 of grid cell center"
+"3","lat","Latitatude in WGS84 of grid cell center"
+"4","iso3","ISO 3166-1 alpha-3 country code for a grid cell"
+"5","bsm_response","The binomial probability that a grid cell sampled at that location will contain an EID event as opposed to a background sample, when drawing equal numbers of absence and background samples weighted by reporting effort."
